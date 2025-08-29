@@ -1,697 +1,1489 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cal Expert — Smarter Calorie Tracking</title>
-  <meta name="description" content="Cal Expert helps you log meals, track calories, and turn insights into healthier habits." />
-  <meta name="theme-color" content="#16a34a">
-  <!-- Open Graph -->
-  <meta property="og:title" content="Cal Expert — Smarter Calorie Tracking">
-  <meta property="og:description" content="Log meals in seconds, visualize intake vs. burn, and build habits that stick.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://calapps-hub.github.io">
-  <!-- Favicon (none on purpose) -->
-  <link rel="icon" href="" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cal Expert — Smarter Calorie Tracking</title>
+    <meta
+      name="description"
+      content="Cal Expert helps you log meals, track calories, and turn insights into healthier habits."
+    />
+    <meta name="theme-color" content="#16a34a" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Cal Expert — Smarter Calorie Tracking" />
+    <meta
+      property="og:description"
+      content="Log meals in seconds, visualize intake vs. burn, and build habits that stick."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://calapps-hub.github.io" />
+    <!-- Favicon (none on purpose) -->
+    <link rel="icon" href="./images/favicon.ico" />
+    <style>
+      /* ======= Design Tokens ======= */
+      :root {
+        --bg: #0b1110;
+        --bg-2: #0e1614;
+        --surface: #101a13;
+        --glass: rgba(255, 255, 255, 0.06);
+        --border: rgba(255, 255, 255, 0.08);
+        --ring: rgba(34, 197, 94, 0.35);
+        --text: #e7f4ec;
+        --muted: #a2b7ac;
+        --fine: #8aa095;
+        --g-300: #86efac;
+        --g-400: #34d399;
+        --g-500: #22c55e;
+        --g-600: #16a34a;
+        --radius: 16px;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        color: var(--text);
+        font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background: radial-gradient(900px 500px at 10% -10%, rgba(34, 197, 94, 0.22), transparent 55%),
+          radial-gradient(900px 500px at 90% 0%, rgba(52, 211, 153, 0.2), transparent 55%),
+          linear-gradient(180deg, var(--bg), var(--bg-2) 40%, var(--bg));
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .container {
+        max-width: 1120px;
+        margin: auto;
+        padding: 0 24px;
+      }
 
-  <style>
-    /* ======= Design Tokens ======= */
-    :root{
-      --bg:#0b1110; --bg-2:#0e1614;
-      --surface:#101a13; --glass:rgba(255,255,255,.06);
-      --border:rgba(255,255,255,.08); --ring:rgba(34,197,94,.35);
-      --text:#e7f4ec; --muted:#a2b7ac; --fine:#8aa095;
-      --g-300:#86efac; --g-400:#34d399; --g-500:#22c55e; --g-600:#16a34a;
-      --radius:16px; --shadow:0 24px 60px rgba(0,0,0,.45);
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0; color:var(--text);
-      font:16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background:
-        radial-gradient(900px 500px at 10% -10%, rgba(34,197,94,.22), transparent 55%),
-        radial-gradient(900px 500px at 90% 0%, rgba(52,211,153,.20), transparent 55%),
-        linear-gradient(180deg, var(--bg), var(--bg-2) 40%, var(--bg));
-      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-    }
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1120px;margin:auto;padding:0 24px}
+      /* ======= Header ======= */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: linear-gradient(180deg, rgba(16, 26, 19, 0.7), rgba(16, 26, 19, 0.35));
+        backdrop-filter: saturate(130%) blur(8px);
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .header[data-scrolled='true'] {
+        border-color: var(--border);
+        box-shadow: var(--shadow);
+      }
+      .header__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        gap: 10px;
+      }
+      .brand img {
+        margin-top: -2px;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .nav a {
+        opacity: 0.9;
+      }
+      .nav a:hover {
+        opacity: 1;
+      }
+      .hamburger {
+        display: none;
+        background: none;
+        border: 0;
+        padding: 6px;
+        cursor: pointer;
+      }
+      .hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: #cfe7d8;
+        margin: 4px 0;
+        border-radius: 2px;
+      }
 
-    /* ======= Header ======= */
-    .header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg, rgba(16,26,19,.7), rgba(16,26,19,.35));backdrop-filter:saturate(130%) blur(8px);border-bottom:1px solid transparent;transition:border-color .2s ease, box-shadow .2s ease}
-    .header[data-scrolled="true"]{border-color:var(--border); box-shadow:var(--shadow)}
-    .header__inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{display:flex;align-items:center;font-weight:800;letter-spacing:.2px}
-    .nav{display:flex;align-items:center;gap:20px}
-    .nav a{opacity:.9} .nav a:hover{opacity:1}
-    .hamburger{display:none;background:none;border:0;padding:6px;cursor:pointer}
-    .hamburger span{display:block;width:22px;height:2px;background:#cfe7d8;margin:4px 0;border-radius:2px}
+      /* ======= Buttons ======= */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.85rem 1.15rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--text);
+        font-weight: 700;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn--primary {
+        background: linear-gradient(180deg, var(--g-500), var(--g-600));
+        border-color: transparent;
+        box-shadow: 0 14px 30px rgba(34, 197, 94, 0.25);
+      }
+      .btn--ghost {
+        background: transparent;
+      }
+      .btn--sm {
+        padding: 0.6rem 0.9rem;
+        font-size: 0.95rem;
+      }
+      .btn--lg {
+        padding: 1rem 1.25rem;
+      }
 
-    /* ======= Buttons ======= */
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1.15rem;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.02); color:var(--text); font-weight:700;transition:transform .18s ease, box-shadow .18s ease, background .18s ease}
-    .btn:hover{transform:translateY(-1px)}
-    .btn--primary{background:linear-gradient(180deg,var(--g-500),var(--g-600));border-color:transparent; box-shadow:0 14px 30px rgba(34,197,94,.25)}
-    .btn--ghost{background:transparent}
-    .btn--sm{padding:.6rem .9rem;font-size:.95rem}
-    .btn--lg{padding:1rem 1.25rem}
+      /* ======= Hero ======= */
+      .hero {
+        position: relative;
+      }
+      .hero__grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        align-items: center;
+        padding: 64px 0 24px;
+      }
+      .eyebrow {
+        display: inline-block;
+        font-size: 0.85rem;
+        color: var(--g-300);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-bottom: 0.35rem;
+      }
+      .hero h1 {
+        font-size: clamp(2.2rem, 4vw, 3.2rem);
+        line-height: 1.12;
+        margin: 0.2rem 0 0.7rem;
+      }
+      .accent {
+        background: linear-gradient(90deg, var(--g-400), var(--g-600));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .subtitle {
+        color: var(--muted);
+        max-width: 56ch;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        margin: 18px 0;
+      }
+      .badges {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 0;
+        margin: 14px 0 0;
+        list-style: none;
+        color: #d8eee3;
+      }
+      .badges li {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        padding: 0.45rem 0.7rem;
+        border-radius: 999px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .badges li:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+      }
 
-    /* ======= Hero ======= */
-    .hero{position:relative}
-    .hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:64px 0 24px}
-    .eyebrow{display:inline-block;font-size:.85rem;color:var(--g-300);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
-    .hero h1{font-size:clamp(2.2rem,4vw,3.2rem);line-height:1.12;margin:.2rem 0 .7rem}
-    .accent{background:linear-gradient(90deg,var(--g-400),var(--g-600));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .subtitle{color:var(--muted);max-width:56ch}
-    .actions{display:flex;gap:12px;margin:18px 0}
-    .badges{display:flex;gap:10px;flex-wrap:wrap;padding:0;margin:14px 0 0;list-style:none;color:#d8eee3}
-    .badges li{background:rgba(255,255,255,.04);border:1px solid var(--border);padding:.45rem .7rem;border-radius:999px;transition:transform .2s ease, box-shadow .2s ease}
-    .badges li:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.25)}
-
-    /* Preview Card */
-    .glasscard{background:var(--glass); border:1px solid var(--border); border-radius:20px;padding:22px; box-shadow:var(--shadow); backdrop-filter:blur(10px) saturate(120%);animation:floatIn .5s ease both}
-    @keyframes floatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-    .glasscard__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .chip{font-size:.75rem;padding:.18rem .55rem;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:#d7eee2}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 16px}
-    .stat__label{display:block;color:var(--muted);font-size:.9rem}
-    .stat__value{font-weight:800}
-    .stat__value--good{color:var(--g-400)}
-    .progress{height:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;overflow:hidden}
-    .progress__bar{height:100%;background:linear-gradient(90deg,var(--g-400),var(--g-600))}
-
-    /* ======= Sections ======= */
-    .section{padding:72px 0}
-    .section--tint{background:rgba(255,255,255,.02);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
-    /* flowing gradient background for results */
-    #results.section--tint::before{content:"";position:absolute;inset:-20%;background:radial-gradient(60% 40% at 10% 20%, rgba(34,197,94,.14), transparent 60%),radial-gradient(60% 40% at 90% 30%, rgba(52,211,153,.12), transparent 60%);filter:blur(10px);animation:bgFlow 18s linear infinite;pointer-events:none;opacity:.6}
-    .section__title{font-size:clamp(1.6rem,3vw,2.2rem);margin:0 0 .35rem}
-    .section__subtitle{color:var(--muted);margin:0 0 1.2rem}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    .grid{display:grid;gap:18px}
-
-    /* ======= WHY (compact) ======= */
-    .why{grid-template-columns:repeat(3,1fr)}
-    .why__card{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px 18px 20px;box-shadow:var(--shadow);transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease}
-    .why__card:hover{transform:translateY(-3px);box-shadow:0 28px 70px rgba(22,163,74,.18);border-color:rgba(34,197,94,.35)}
-    .why__icon{font-size:1.4rem;margin-bottom:.4rem}
-    .why__title{margin:.1rem 0 .25rem;font-size:1.15rem}
-    .why__desc{color:var(--muted)}
-
-    /* ======= KPIs (Results) ======= */
-    .kpis{grid-template-columns:repeat(3,1fr)}
-    .kpi{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;text-align:center}
-    .kpi__num{font-weight:900;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.1;background:linear-gradient(90deg,var(--g-400),var(--g-600));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .kpi__label{color:var(--muted);margin-top:.4rem}
-
-    /* ======= Trust / Science ======= */
-    .trust{grid-template-columns:repeat(3,1fr)}
-    .trust__card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:var(--shadow);transition:transform .25s ease, border-color .25s ease, box-shadow .6s ease;position:relative}
-    .trust__card::after{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;box-shadow:0 0 0 0 rgba(34,197,94,.0);transition:box-shadow .6s ease}
-    .trust__card:hover{transform:translateY(-3px);border-color:rgba(34,197,94,.35)}
-    .trust__card:hover::after{box-shadow:0 0 0 2px rgba(34,197,94,.25), 0 0 24px 6px rgba(34,197,94,.12);animation:glowPulse 2.8s ease-in-out infinite}
-    .trust__card:hover{transform:translateY(-3px);border-color:rgba(34,197,94,.35)}
-    .trust__title{margin:.1rem 0 .25rem;font-size:1.1rem}
-    .trust__desc{color:var(--muted)}
-
-    /* ======= Goals (chips) ======= */
-    .chips{display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:0;list-style:none}
-    .chip{display:inline-flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.03)}
-
-    /* ======= Charts (Snapshot) ======= */
-    .charts{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:stretch}
-    .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
-
-    /* Donut (macro composition) */
-    /* New SVG-based donut for pro look */
-    .donut-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
-    .donut-svg{width:100%;max-width:320px;display:block;margin:6px auto 8px}
-    .donut-svg .track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:18}
-    .donut-svg .seg{fill:none;stroke-width:18;stroke-linecap:butt;stroke-dasharray:0 100;transition:stroke-dasharray .9s ease, stroke-dashoffset .9s ease}
-    .donut-svg .seg--carb{stroke:#f59e0b}
-    .donut-svg .seg--protein{stroke:#22c55e}
-    .donut-svg .seg--fat{stroke:#60a5fa}
-    .donut-svg .ticks{fill:none;stroke:rgba(255,255,255,.10);stroke-width:2;stroke-dasharray:2 6}
-    .center-stack{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
-    .center-kcal{font-weight:900;font-size:1.5rem}
-    .center-sub{color:var(--muted);font-size:.95rem;margin-top:.15rem}
-    .legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px}
-    .legend__item{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .6rem;border:1px solid var(--border);border-radius:999px;background:rgba(255,255,255,.03)}
-    .legend__item .value{opacity:.85;font-variant-numeric:tabular-nums}
-
-    /* Toggle + Tooltip */
-    .mode-toggle{display:flex;gap:6px;justify-content:center;margin-top:6px}
-    .mode-toggle button{background:rgba(255,255,255,.04);border:1px solid var(--border);padding:.28rem .6rem;border-radius:999px;color:#cfe7d8;font-weight:700;cursor:pointer}
-    .mode-toggle button.active{background:linear-gradient(180deg,var(--g-500),var(--g-600));border-color:transparent;color:#0b1110}
-    .chart-tooltip{position:absolute;pointer-events:none;background:rgba(16,26,19,.95);border:1px solid var(--border);padding:.35rem .55rem;border-radius:10px;font-size:.9rem;box-shadow:var(--shadow);transform:translate(-50%,-120%);opacity:0;transition:opacity .15s ease}
-    .chart-tooltip.show{opacity:1}
-
-    /* Sparkline */
-    .spark{margin-top:14px}
-    .spark .spark-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-    .spark .spark-head .ttl{font-weight:800}
-    .spark .spark-head .meta{color:var(--muted);font-size:.9rem}
-    .spark-svg{width:100%;height:70px;display:block}
-    .spark-svg .line{fill:none;stroke:#34d399;stroke-width:2}
-    .spark-svg .area{fill:rgba(52,211,153,.18)}
-    .spark-svg .avg{stroke:rgba(255,255,255,.12);stroke-dasharray:4 4;stroke-width:1}
-    .spark-svg .dot{fill:#22c55e;stroke:rgba(0,0,0,.35);stroke-width:1}
-
-    /* Rings (progress feel) */
-    /* New SVG progress rings */
-    .rings{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
-    .ringfig{text-align:center}
-    .ringfig--carb{color:#f59e0b}
-    .ringfig--protein{color:#22c55e}
-    .ringfig--fat{color:#60a5fa}
-    .ring-svg{width:100%;max-width:140px;display:block;margin:auto}
-    .ring-svg .track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:14}
-    .ring-svg .tick{fill:none;stroke:rgba(255,255,255,.10);stroke-width:2;stroke-dasharray:2 6}
-    .ring-svg .prog{fill:none;stroke:currentColor;stroke-width:14;stroke-linecap:round;stroke-dasharray:0 100;transition:stroke-dasharray 1s ease}
-    .ring-svg text{font-weight:800;fill:#e7f4ec}
-    .ring__label{color:var(--muted);font-weight:700;font-size:.9rem;margin-top:6px;text-align:center}
-
-    @media (max-width: 760px){
-      .charts{grid-template-columns:1fr}
-    }
-
-    /* ======= Reviews ======= */
-    .reviews{grid-template-columns:repeat(3,1fr)}
-    .review__header{display:flex;align-items:center;gap:10px;margin-bottom:.35rem}
-    .avatar{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:#0c1311;background:linear-gradient(180deg,var(--g-500),var(--g-600))}
-    .stars{position:relative;font-size:1.05rem;letter-spacing:2px;color:transparent;background:linear-gradient(90deg,#d3efe2,#7ee4b3,#d3efe2);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;animation:shimmer 3s linear infinite}
-    .review__meta{color:var(--muted);font-size:.9rem}
-    .quote{color:#d9eee4}
-    .reviews .card{border-radius:20px;transition:transform .25s ease, border-color .25s ease}
-    .reviews .card:hover{transform:translateY(-3px);border-color:rgba(34,197,94,.35)}
-
-    /* FAQ */
-    .faq{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
-    .faq summary{cursor:pointer;font-weight:700}
-    .faq p{color:#d2e7db;margin:.6rem 0 0}
-    .faq + .faq{margin-top:12px}
-
-    /* Footer */
-    .footer{border-top:1px solid var(--border);background:rgba(255,255,255,.02)}
-    .footer__inner{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding:18px 0}
-    .footer__nav{display:flex;gap:16px;justify-content:center}
-    .fine{grid-column:1/-1;text-align:center;color:var(--fine);font-size:.95rem}
-
-    /* ======= Motion ======= */
-    .reveal{opacity:0;transform:translateY(14px) scale(.985);transition:opacity .6s ease, transform .6s ease}
-    .reveal.in{opacity:1;transform:none}
-
-    @keyframes shimmer{0%{background-position:0% 0}100%{background-position:200% 0}}
-    @keyframes glowPulse{0%,100%{box-shadow:0 0 0 2px rgba(34,197,94,.18),0 0 18px 4px rgba(34,197,94,.08)}50%{box-shadow:0 0 0 2px rgba(34,197,94,.35),0 0 26px 8px rgba(34,197,94,.16)}}
-    @keyframes bgFlow{0%{transform:translateX(0) rotate(0deg)}50%{transform:translateX(-4%) rotate(10deg)}100%{transform:translateX(0) rotate(0deg)}}
-
-    @media (prefers-reduced-motion: reduce){
-      #results.section--tint::before{animation:none}
-      .stars{animation:none}
-      .trust__card:hover::after{animation:none}
-    }
-
-    /* ======= Responsive ======= */
-    @media (max-width: 980px){
-      .hero__grid{grid-template-columns:1fr}
-      .why{grid-template-columns:1fr}
-      .kpis{grid-template-columns:1fr 1fr}
-      .trust{grid-template-columns:1fr 1fr}
-      .reviews{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width: 760px){
-      .nav{display:none;position:absolute;right:24px;top:64px;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
-      .nav.open{display:flex}
-      .hamburger{display:inline-block}
-      .reviews{grid-template-columns:1fr}
-      .kpis{grid-template-columns:1fr}
-      .trust{grid-template-columns:1fr}
-    }
-  </style>
-</head>
-<body>
-  <header class="header" data-scrolled="false">
-    <div class="container header__inner">
-      <a class="brand" href="#"><span>Cal Expert</span></a>
-      <nav class="nav" id="nav">
-        <a href="#why">Why Cal Expert</a>
-        <a href="#reviews">Reviews</a>
-        <a href="#faq">FAQ</a>
-        <a href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!">Contact</a>
-      </nav>
-      <button class="hamburger" id="hamburger" aria-expanded="false"><span></span><span></span><span></span></button>
-    </div>
-  </header>
-
-  <section class="hero" id="hero-cta">
-    <div class="container hero__grid">
-      <div class="hero__text">
-        <span class="eyebrow">Calorie & Nutrition</span>
-        <h1>Track calories. <span class="accent">Feel in control.</span></h1>
-        <p class="subtitle">Log meals in seconds, visualize intake vs. burn, and build habits that actually stick.</p>
-        <div class="actions">
-          <a href="#faq" class="btn btn--primary btn--lg">Read FAQ</a>
-          <a href="#why" class="btn btn--ghost btn--lg">See Features</a>
-        </div>
-        <ul class="badges reveal">
-          <li>⚡ Fast logging</li>
-          <li>🔒 Privacy-first</li>
-          <li>🤖 AI guidance</li>
-          <li>📈 Weekly insights</li>
-        </ul>
-      </div>
-      <div class="glasscard" aria-label="Calorie balance preview">
-        <div class="glasscard__head"><strong>Today’s Balance</strong><span class="chip">Preview</span></div>
-        <div class="stats">
-          <div><span class="stat__label">Intake</span><span class="stat__value">1,520 kcal</span></div>
-          <div><span class="stat__label">Burned</span><span class="stat__value">1,860 kcal</span></div>
-          <div><span class="stat__label">Net</span><span class="stat__value stat__value--good">-340 kcal</span></div>
-        </div>
-        <div class="progress" aria-label="Daily progress"><div class="progress__bar" style="width:62%"></div></div>
-        <p class="muted">Log for 7 days to unlock weekly reports and personalized tips.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="why" class="section">
-    <div class="container">
-      <h2 class="section__title">Why Cal Expert</h2>
-      <p class="section__subtitle">Three pillars that make tracking effortless and effective.</p>
-      <div class="grid why">
-        <article class="why__card reveal" style="--d:.0s">
-          <div class="why__icon">🍎</div>
-          <h3 class="why__title">Smart Logging</h3>
-          <p class="why__desc">Barcode scan, rich food DB, and one‑tap portions so you can finish logging in seconds.</p>
-        </article>
-        <article class="why__card reveal" style="--d:.08s">
-          <div class="why__icon">🧠</div>
-          <h3 class="why__title">Personal Coaching</h3>
-          <p class="why__desc">AI turns your week of meals into simple, actionable tips aligned with your goals.</p>
-        </article>
-        <article class="why__card reveal" style="--d:.16s">
-          <div class="why__icon">📊</div>
-          <h3 class="why__title">Deep Insights</h3>
-          <p class="why__desc">Clear macro trends, quality scores, and progress snapshots — with your privacy protected.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- RESULTS / KPIs -->
-  <section id="results" class="section section--tint">
-    <div class="container">
-      <h2 class="section__title">Results that Matter</h2>
-      <p class="section__subtitle">Stay consistent, log faster, feel better.</p>
-      <div class="grid kpis">
-        <div class="kpi reveal"><div class="kpi__num" data-target="5.2" data-decimals="1">0.0</div><div class="kpi__label">Avg. log days per week</div></div>
-        <div class="kpi reveal"><div class="kpi__num" data-target="7" data-suffix="s">0s</div><div class="kpi__label">Median time to log a meal</div></div>
-        <div class="kpi reveal"><div class="kpi__num" data-target="4.8" data-decimals="1">0.0</div><div class="kpi__label">Satisfaction rating</div></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TRUST / SCIENCE -->
-  <section id="trust" class="section">
-    <div class="container">
-      <h2 class="section__title">Trust & Science</h2>
-      <p class="section__subtitle">Private by design. Grounded in nutrition science.</p>
-      <div class="grid trust">
-        <article class="trust__card reveal">
-          <h3 class="trust__title">Privacy‑first</h3>
-          <p class="trust__desc">Your data is yours. Local-first logging with export & delete anytime.</p>
-        </article>
-        <article class="trust__card reveal" style="--d:.08s">
-          <h3 class="trust__title">Science‑backed</h3>
-          <p class="trust__desc">Built around evidence‑based energy balance and macronutrient guidelines.</p>
-        </article>
-        <article class="trust__card reveal" style="--d:.16s">
-          <h3 class="trust__title">Transparent</h3>
-          <p class="trust__desc">Clear assumptions and targets. No black‑box numbers you can’t verify.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- GOALS -->
-  <!-- GOALS -->
-  <!-- SNAPSHOT / CHARTS -->
-  <section id="snapshot" class="section section--tint">
-    <div class="container">
-      <h2 class="section__title">Nutrition Snapshot</h2>
-      <p class="section__subtitle">Today's macro composition and target progress.</p>
-
-      <div class="charts reveal">
-        <!-- Donut chart -->
-        <article class="chart-card" aria-label="Macronutrient composition">
-          <h3 style="margin:0 0 .5rem">Macro Composition</h3>
-          <div class="donut-wrap">
-            <svg class="donut-svg" id="macro-donut" viewBox="0 0 140 140" role="img" aria-label="Macro composition">
-              <g transform="rotate(-90 70 70)">
-                <circle class="track" cx="70" cy="70" r="52" />
-                <circle class="seg seg--carb" cx="70" cy="70" r="52" pathLength="100" />
-                <circle class="seg seg--protein" cx="70" cy="70" r="52" pathLength="100" />
-                <circle class="seg seg--fat" cx="70" cy="70" r="52" pathLength="100" />
-                <circle class="ticks" cx="70" cy="70" r="58" pathLength="100" />
-              </g>
-            </svg>
-            <div class="center-stack"><div class="center-kcal" id="macro-kcal">0</div><div class="center-sub">kcal today</div></div>
-            <div class="chart-tooltip" id="macro-tip"></div>
-          </div>
-          <div class="legend" id="macro-legend">
-            <span class="legend__item"><span class="dot" style="background:#f59e0b"></span>Carbs <span class="value" id="l-carb"></span></span>
-            <span class="legend__item"><span class="dot" style="background:#22c55e"></span>Protein <span class="value" id="l-protein"></span></span>
-            <span class="legend__item"><span class="dot" style="background:#60a5fa"></span>Fat <span class="value" id="l-fat"></span></span>
-          </div>
-          <div class="mode-toggle" id="unit-toggle"><button data-mode="pct" class="active">%</button><button data-mode="g">g</button></div>
-        </article>
-
-        <!-- Progress rings -->
-        <article class="chart-card" aria-label="Targets progress">
-          <h3 style="margin:0 0 .5rem">Progress Today</h3>
-          <div class="rings">
-            <figure class="ringfig ringfig--carb">
-              <svg id="ring-carb" class="ring-svg" viewBox="0 0 120 120" role="img" aria-label="Carbs progress">
-                <g transform="rotate(-90 60 60)">
-                  <circle class="track" cx="60" cy="60" r="44" />
-                  <circle class="tick" cx="60" cy="60" r="44" pathLength="100" />
-                  <circle class="prog" cx="60" cy="60" r="44" pathLength="100" />
-                </g>
-                <text class="val" x="60" y="60" text-anchor="middle" dominant-baseline="middle">0%</text>
-              </svg>
-              <div class="ring__label">Carbs</div>
-            </figure>
-            <figure class="ringfig ringfig--protein">
-              <svg id="ring-protein" class="ring-svg" viewBox="0 0 120 120" role="img" aria-label="Protein progress">
-                <g transform="rotate(-90 60 60)">
-                  <circle class="track" cx="60" cy="60" r="44" />
-                  <circle class="tick" cx="60" cy="60" r="44" pathLength="100" />
-                  <circle class="prog" cx="60" cy="60" r="44" pathLength="100" />
-                </g>
-                <text class="val" x="60" y="60" text-anchor="middle" dominant-baseline="middle">0%</text>
-              </svg>
-              <div class="ring__label">Protein</div>
-            </figure>
-            <figure class="ringfig ringfig--fat">
-              <svg id="ring-fat" class="ring-svg" viewBox="0 0 120 120" role="img" aria-label="Fat progress">
-                <g transform="rotate(-90 60 60)">
-                  <circle class="track" cx="60" cy="60" r="44" />
-                  <circle class="tick" cx="60" cy="60" r="44" pathLength="100" />
-                  <circle class="prog" cx="60" cy="60" r="44" pathLength="100" />
-                </g>
-                <text class="val" x="60" y="60" text-anchor="middle" dominant-baseline="middle">0%</text>
-              </svg>
-              <div class="ring__label">Fat</div>
-            </figure>
-          </div>
-          <div class="spark">
-            <div class="spark-head"><span class="ttl">7‑day Intake</span><span class="meta">avg <span id="avg-kcal">0</span> kcal</span></div>
-            <svg class="spark-svg" id="kcal-spark" viewBox="0 0 140 70" role="img" aria-label="7-day intake"></svg>
-          </div>
-          <p class="section__subtitle" style="margin-top:12px">Relative to today's targets. Values >100% mean you've exceeded that macro target.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ======= Reviews ======= -->
-  <section id="reviews" class="section">
-    <div class="container">
-      <h2 class="section__title">What Our Users Say</h2>
-      <p class="section__subtitle">Real stories from people building healthier habits with CalMate.</p>
-      <div class="grid reviews">
-        <article class="card">
-          <div class="review__header">
-            <span class="avatar" aria-hidden="true">AL</span>
-            <div>
-              <strong>Alex Li</strong>
-              <div class="review__meta">Lost 4.2 kg in 8 weeks</div>
-            </div>
-          </div>
-          <div class="stars" aria-label="5 out of 5">★★★★★</div>
-          <p class="quote">“Logging takes seconds, and the weekly insights make it obvious where to improve. Best habit app I've tried.”</p>
-        </article>
-        <article class="card">
-          <div class="review__header">
-            <span class="avatar" aria-hidden="true">JM</span>
-            <div>
-              <strong>Julia M.</strong>
-              <div class="review__meta">Busy parent · Evening logger</div>
-            </div>
-          </div>
-          <div class="stars" aria-label="5 out of 5">★★★★★</div>
-          <p class="quote">“The balance view finally helps me connect meals with workouts. I actually feel in control.”</p>
-        </article>
-        <article class="card">
-          <div class="review__header">
-            <span class="avatar" aria-hidden="true">KS</span>
-            <div>
-              <strong>Kevin S.</strong>
-              <div class="review__meta">Macro tracking · 12 weeks</div>
-            </div>
-          </div>
-          <div class="stars" aria-label="4 out of 5">★★★★☆</div>
-          <p class="quote">“Clean design, fast scanning, and thoughtful tips. Exactly the combo I needed.”</p>
-        </article>
-        <article class="card">
-          <div class="review__header">
-            <span class="avatar" aria-hidden="true">ZY</span>
-            <div>
-              <strong>Zhang Yu</strong>
-              <div class="review__meta">Runner · Morning logger</div>
-            </div>
-          </div>
-          <div class="stars" aria-label="5 out of 5">★★★★★</div>
-          <p class="quote">“界面清爽、记录超快，每周总结很有用，能看清自己的进步。”</p>
-        </article>
-        <article class="card">
-          <div class="review__header">
-            <span class="avatar" aria-hidden="true">AN</span>
-            <div>
-              <strong>Anita N.</strong>
-              <div class="review__meta">Vegetarian · 6 months</div>
-            </div>
-          </div>
-          <div class="stars" aria-label="5 out of 5">★★★★★</div>
-          <p class="quote">“Recipe logging is painless, and the nutrient breakdowns helped me fix low protein days.”</p>
-        </article>
-        <article class="card">
-          <div class="review__header">
-            <span class="avatar" aria-hidden="true">DW</span>
-            <div>
-              <strong>David W.</strong>
-              <div class="review__meta">Desk worker · Habit builder</div>
-            </div>
-          </div>
-          <div class="stars" aria-label="4 out of 5">★★★★☆</div>
-          <p class="quote">“Love the reminders and weekly nudges. Small changes added up fast.”</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section id="faq" class="section">
-    <div class="container">
-      <h2 class="section__title">FAQ</h2>
-      <p class="section__subtitle">Quick answers to common questions.</p>
-      <details class="faq"><summary>How does Cal Expert calculate daily calorie needs?</summary><p>We estimate your BMR from height, weight, age, and activity level, then adjust for your goal to recommend a daily intake target.</p></details>
-      <details class="faq"><summary>Is my data private and secure?</summary><p>Your data stays private and is never sold. You can export or delete it anytime from the app settings.</p></details>
-      <details class="faq"><summary>What do I get for free?</summary><p>Free includes the basic food database, daily logging, and reminders. Advanced features like barcode scanning and weekly insights are coming soon.</p></details>
-      <details class="faq"><summary>How can I contact support?</summary><p>Click <a href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!">Contact</a> to email us directly. We usually reply within 2–3 business days.</p></details>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container footer__inner">
-      <a class="brand" href="#"><span>Cal Expert</span></a>
-      <nav class="footer__nav">
-        <a href="#why">Features</a>
-        <a href="#reviews">Reviews</a>
-        <a href="#faq">FAQ</a>
-        <a href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!">Contact</a>
-      </nav>
-      <p class="fine">© <span id="year"></span> Cal Expert. All rights reserved.</p>
-    </div>
-  </footer>
-
-  <script>
-    // Mobile nav
-    const hamburger = document.getElementById('hamburger');
-    const nav = document.getElementById('nav');
-    hamburger?.addEventListener('click', () => {
-      const expanded = hamburger.getAttribute('aria-expanded') === 'true';
-      hamburger.setAttribute('aria-expanded', String(!expanded));
-      nav.classList.toggle('open');
-    });
-
-    // Header shadow on scroll
-    const header = document.querySelector('.header');
-    const onScroll = () => header.dataset.scrolled = (window.scrollY > 8);
-    window.addEventListener('scroll', onScroll); onScroll();
-
-    // Reveal on scroll
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-    }, {threshold: 0.16});
-    document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay = getComputedStyle(el).getPropertyValue('--d') || `${i*0.06}s`; io.observe(el);});
-
-    // Respect reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelectorAll('.reveal').forEach(el=>{el.style.transition='none'; el.style.opacity=1; el.style.transform='none'});
-    }
-
-    // KPI count up on view
-    const kpiObserver = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{
-        if(e.isIntersecting){
-          const el = e.target;
-          const target = parseFloat(el.dataset.target || '0');
-          const decimals = parseInt(el.dataset.decimals || '0', 10);
-          const suffix = el.dataset.suffix || '';
-          const duration = 900; const start = performance.now();
-          function tick(t){
-            const p = Math.min(1,(t-start)/duration);
-            const val = target * p;
-            el.textContent = val.toFixed(decimals) + suffix;
-            if(p<1) requestAnimationFrame(tick);
-          }
-          requestAnimationFrame(tick);
-          kpiObserver.unobserve(el);
+      /* Preview Card */
+      .glasscard {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px) saturate(120%);
+        animation: floatIn 0.5s ease both;
+      }
+      @keyframes floatIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
         }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .glasscard__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+      .chip {
+        font-size: 0.75rem;
+        padding: 0.18rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        color: #d7eee2;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 12px 0 16px;
+      }
+      .stat__label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .stat__value {
+        font-weight: 800;
+      }
+      .stat__value--good {
+        color: var(--g-400);
+      }
+      .progress {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress__bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--g-400), var(--g-600));
+      }
+
+      /* ======= Sections ======= */
+      .section {
+        padding: 72px 0;
+      }
+      .section--tint {
+        background: rgba(255, 255, 255, 0.02);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+      /* flowing gradient background for results */
+      #results.section--tint::before {
+        content: '';
+        position: absolute;
+        inset: -20%;
+        background: radial-gradient(60% 40% at 10% 20%, rgba(34, 197, 94, 0.14), transparent 60%),
+          radial-gradient(60% 40% at 90% 30%, rgba(52, 211, 153, 0.12), transparent 60%);
+        filter: blur(10px);
+        animation: bgFlow 18s linear infinite;
+        pointer-events: none;
+        opacity: 0.6;
+      }
+      .section__title {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        margin: 0 0 0.35rem;
+      }
+      .section__subtitle {
+        color: var(--muted);
+        margin: 0 0 1.2rem;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      /* ======= WHY (compact) ======= */
+      .why {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .why__card {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px 18px 20px;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+      .why__card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 28px 70px rgba(22, 163, 74, 0.18);
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+      .why__icon {
+        font-size: 1.4rem;
+        margin-bottom: 0.4rem;
+      }
+      .why__title {
+        margin: 0.1rem 0 0.25rem;
+        font-size: 1.15rem;
+      }
+      .why__desc {
+        color: var(--muted);
+      }
+
+      /* ======= KPIs (Results) ======= */
+      .kpis {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .kpi {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        text-align: center;
+      }
+      .kpi__num {
+        font-weight: 900;
+        font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+        line-height: 1.1;
+        background: linear-gradient(90deg, var(--g-400), var(--g-600));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .kpi__label {
+        color: var(--muted);
+        margin-top: 0.4rem;
+      }
+
+      /* ======= Trust / Science ======= */
+      .trust {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .trust__card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.6s ease;
+        position: relative;
+      }
+      .trust__card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 20px;
+        pointer-events: none;
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+        transition: box-shadow 0.6s ease;
+      }
+      .trust__card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+      .trust__card:hover::after {
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25), 0 0 24px 6px rgba(34, 197, 94, 0.12);
+        animation: glowPulse 2.8s ease-in-out infinite;
+      }
+      .trust__card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+      .trust__title {
+        margin: 0.1rem 0 0.25rem;
+        font-size: 1.1rem;
+      }
+      .trust__desc {
+        color: var(--muted);
+      }
+
+      /* ======= Goals (chips) ======= */
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      /* ======= Charts (Snapshot) ======= */
+      .charts {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+      .chart-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+
+      /* Donut (macro composition) */
+      /* New SVG-based donut for pro look */
+      .donut-wrap {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .donut-svg {
+        width: 100%;
+        max-width: 320px;
+        display: block;
+        margin: 6px auto 8px;
+      }
+      .donut-svg .track {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.08);
+        stroke-width: 18;
+      }
+      .donut-svg .seg {
+        fill: none;
+        stroke-width: 18;
+        stroke-linecap: butt;
+        stroke-dasharray: 0 100;
+        transition: stroke-dasharray 0.9s ease, stroke-dashoffset 0.9s ease;
+      }
+      .donut-svg .seg--carb {
+        stroke: #f59e0b;
+      }
+      .donut-svg .seg--protein {
+        stroke: #22c55e;
+      }
+      .donut-svg .seg--fat {
+        stroke: #60a5fa;
+      }
+      .donut-svg .ticks {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.1);
+        stroke-width: 2;
+        stroke-dasharray: 2 6;
+      }
+      .center-stack {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        pointer-events: none;
+      }
+      .center-kcal {
+        font-weight: 900;
+        font-size: 1.5rem;
+      }
+      .center-sub {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin-top: 0.15rem;
+      }
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 8px;
+      }
+      .legend__item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.35rem 0.6rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .legend__item .value {
+        opacity: 0.85;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Toggle + Tooltip */
+      .mode-toggle {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-top: 6px;
+      }
+      .mode-toggle button {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        padding: 0.28rem 0.6rem;
+        border-radius: 999px;
+        color: #cfe7d8;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .mode-toggle button.active {
+        background: linear-gradient(180deg, var(--g-500), var(--g-600));
+        border-color: transparent;
+        color: #0b1110;
+      }
+      .chart-tooltip {
+        position: absolute;
+        pointer-events: none;
+        background: rgba(16, 26, 19, 0.95);
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.55rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        box-shadow: var(--shadow);
+        transform: translate(-50%, -120%);
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+      .chart-tooltip.show {
+        opacity: 1;
+      }
+
+      /* Sparkline */
+      .spark {
+        margin-top: 14px;
+      }
+      .spark .spark-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+      .spark .spark-head .ttl {
+        font-weight: 800;
+      }
+      .spark .spark-head .meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .spark-svg {
+        width: 100%;
+        height: 70px;
+        display: block;
+      }
+      .spark-svg .line {
+        fill: none;
+        stroke: #34d399;
+        stroke-width: 2;
+      }
+      .spark-svg .area {
+        fill: rgba(52, 211, 153, 0.18);
+      }
+      .spark-svg .avg {
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-dasharray: 4 4;
+        stroke-width: 1;
+      }
+      .spark-svg .dot {
+        fill: #22c55e;
+        stroke: rgba(0, 0, 0, 0.35);
+        stroke-width: 1;
+      }
+
+      /* Rings (progress feel) */
+      /* New SVG progress rings */
+      .rings {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 6px;
+      }
+      .ringfig {
+        text-align: center;
+      }
+      .ringfig--carb {
+        color: #f59e0b;
+      }
+      .ringfig--protein {
+        color: #22c55e;
+      }
+      .ringfig--fat {
+        color: #60a5fa;
+      }
+      .ring-svg {
+        width: 100%;
+        max-width: 140px;
+        display: block;
+        margin: auto;
+      }
+      .ring-svg .track {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.08);
+        stroke-width: 14;
+      }
+      .ring-svg .tick {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.1);
+        stroke-width: 2;
+        stroke-dasharray: 2 6;
+      }
+      .ring-svg .prog {
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 14;
+        stroke-linecap: round;
+        stroke-dasharray: 0 100;
+        transition: stroke-dasharray 1s ease;
+      }
+      .ring-svg text {
+        font-weight: 800;
+        fill: #e7f4ec;
+      }
+      .ring__label {
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-top: 6px;
+        text-align: center;
+      }
+
+      @media (max-width: 760px) {
+        .charts {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ======= Reviews ======= */
+      .reviews {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .review__header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 0.35rem;
+      }
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        color: #0c1311;
+        background: linear-gradient(180deg, var(--g-500), var(--g-600));
+      }
+      .stars {
+        position: relative;
+        font-size: 1.05rem;
+        letter-spacing: 2px;
+        color: transparent;
+        background: linear-gradient(90deg, #d3efe2, #7ee4b3, #d3efe2);
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        animation: shimmer 3s linear infinite;
+      }
+      .review__meta {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .quote {
+        color: #d9eee4;
+      }
+      .reviews .card {
+        border-radius: 20px;
+        transition: transform 0.25s ease, border-color 0.25s ease;
+      }
+      .reviews .card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(34, 197, 94, 0.35);
+      }
+
+      /* FAQ */
+      .faq {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+      }
+      .faq summary {
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .faq p {
+        color: #d2e7db;
+        margin: 0.6rem 0 0;
+      }
+      .faq + .faq {
+        margin-top: 12px;
+      }
+
+      /* Footer */
+      .footer {
+        border-top: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .footer__inner {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 14px;
+        align-items: center;
+        padding: 18px 0;
+      }
+      .footer__nav {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+      }
+      .fine {
+        grid-column: 1/-1;
+        text-align: center;
+        color: var(--fine);
+        font-size: 0.95rem;
+      }
+
+      /* ======= Motion ======= */
+      .reveal {
+        opacity: 0;
+        transform: translateY(14px) scale(0.985);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 0% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+      @keyframes glowPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.18), 0 0 18px 4px rgba(34, 197, 94, 0.08);
+        }
+        50% {
+          box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.35), 0 0 26px 8px rgba(34, 197, 94, 0.16);
+        }
+      }
+      @keyframes bgFlow {
+        0% {
+          transform: translateX(0) rotate(0deg);
+        }
+        50% {
+          transform: translateX(-4%) rotate(10deg);
+        }
+        100% {
+          transform: translateX(0) rotate(0deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #results.section--tint::before {
+          animation: none;
+        }
+        .stars {
+          animation: none;
+        }
+        .trust__card:hover::after {
+          animation: none;
+        }
+      }
+
+      /* ======= Responsive ======= */
+      @media (max-width: 980px) {
+        .hero__grid {
+          grid-template-columns: 1fr;
+        }
+        .why {
+          grid-template-columns: 1fr;
+        }
+        .kpis {
+          grid-template-columns: 1fr 1fr;
+        }
+        .trust {
+          grid-template-columns: 1fr 1fr;
+        }
+        .reviews {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 760px) {
+        .nav {
+          display: none;
+          position: absolute;
+          right: 24px;
+          top: 64px;
+          flex-direction: column;
+          gap: 10px;
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          padding: 12px;
+          box-shadow: var(--shadow);
+        }
+        .nav.open {
+          display: flex;
+        }
+        .hamburger {
+          display: inline-block;
+        }
+        .reviews {
+          grid-template-columns: 1fr;
+        }
+        .kpis {
+          grid-template-columns: 1fr;
+        }
+        .trust {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header" data-scrolled="false">
+      <div class="container header__inner">
+        <a class="brand" href="#">
+          <img src="images/logo.png" width="32" height="32" alt="Cal Expert" />
+          <span>Cal Expert</span>
+        </a>
+        <nav class="nav" id="nav">
+          <a href="#why">Why Cal Expert</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#faq">FAQ</a>
+          <a
+            href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
+            >Contact</a
+          >
+        </nav>
+        <button class="hamburger" id="hamburger" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </header>
+
+    <section class="hero" id="hero-cta">
+      <div class="container hero__grid">
+        <div class="hero__text">
+          <span class="eyebrow">Calorie & Nutrition</span>
+          <h1>Track calories. <span class="accent">Feel in control.</span></h1>
+          <p class="subtitle">Log meals in seconds, visualize intake vs. burn, and build habits that actually stick.</p>
+          <div class="actions">
+            <a href="#faq" class="btn btn--primary btn--lg">Read FAQ</a>
+            <a href="#why" class="btn btn--ghost btn--lg">See Features</a>
+          </div>
+          <ul class="badges reveal">
+            <li>⚡ Fast logging</li>
+            <li>🔒 Privacy-first</li>
+            <li>🤖 AI guidance</li>
+            <li>📈 Weekly insights</li>
+          </ul>
+        </div>
+        <div class="glasscard" aria-label="Calorie balance preview">
+          <div class="glasscard__head"><strong>Today’s Balance</strong><span class="chip">Preview</span></div>
+          <div class="stats">
+            <div><span class="stat__label">Intake</span><span class="stat__value">1,520 kcal</span></div>
+            <div><span class="stat__label">Burned</span><span class="stat__value">1,860 kcal</span></div>
+            <div><span class="stat__label">Net</span><span class="stat__value stat__value--good">-340 kcal</span></div>
+          </div>
+          <div class="progress" aria-label="Daily progress"><div class="progress__bar" style="width: 62%"></div></div>
+          <p class="muted">Log for 7 days to unlock weekly reports and personalized tips.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="why" class="section">
+      <div class="container">
+        <h2 class="section__title">Why Cal Expert</h2>
+        <p class="section__subtitle">Three pillars that make tracking effortless and effective.</p>
+        <div class="grid why">
+          <article class="why__card reveal" style="--d: 0s">
+            <div class="why__icon">🍎</div>
+            <h3 class="why__title">Smart Logging</h3>
+            <p class="why__desc">
+              Barcode scan, rich food DB, and one‑tap portions so you can finish logging in seconds.
+            </p>
+          </article>
+          <article class="why__card reveal" style="--d: 0.08s">
+            <div class="why__icon">🧠</div>
+            <h3 class="why__title">Personal Coaching</h3>
+            <p class="why__desc">AI turns your week of meals into simple, actionable tips aligned with your goals.</p>
+          </article>
+          <article class="why__card reveal" style="--d: 0.16s">
+            <div class="why__icon">📊</div>
+            <h3 class="why__title">Deep Insights</h3>
+            <p class="why__desc">
+              Clear macro trends, quality scores, and progress snapshots — with your privacy protected.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS / KPIs -->
+    <section id="results" class="section section--tint">
+      <div class="container">
+        <h2 class="section__title">Results that Matter</h2>
+        <p class="section__subtitle">Stay consistent, log faster, feel better.</p>
+        <div class="grid kpis">
+          <div class="kpi reveal">
+            <div class="kpi__num" data-target="5.2" data-decimals="1">0.0</div>
+            <div class="kpi__label">Avg. log days per week</div>
+          </div>
+          <div class="kpi reveal">
+            <div class="kpi__num" data-target="7" data-suffix="s">0s</div>
+            <div class="kpi__label">Median time to log a meal</div>
+          </div>
+          <div class="kpi reveal">
+            <div class="kpi__num" data-target="4.8" data-decimals="1">0.0</div>
+            <div class="kpi__label">Satisfaction rating</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST / SCIENCE -->
+    <section id="trust" class="section">
+      <div class="container">
+        <h2 class="section__title">Trust & Science</h2>
+        <p class="section__subtitle">Private by design. Grounded in nutrition science.</p>
+        <div class="grid trust">
+          <article class="trust__card reveal">
+            <h3 class="trust__title">Privacy‑first</h3>
+            <p class="trust__desc">Your data is yours. Local-first logging with export & delete anytime.</p>
+          </article>
+          <article class="trust__card reveal" style="--d: 0.08s">
+            <h3 class="trust__title">Science‑backed</h3>
+            <p class="trust__desc">Built around evidence‑based energy balance and macronutrient guidelines.</p>
+          </article>
+          <article class="trust__card reveal" style="--d: 0.16s">
+            <h3 class="trust__title">Transparent</h3>
+            <p class="trust__desc">Clear assumptions and targets. No black‑box numbers you can’t verify.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- GOALS -->
+    <!-- GOALS -->
+    <!-- SNAPSHOT / CHARTS -->
+    <section id="snapshot" class="section section--tint">
+      <div class="container">
+        <h2 class="section__title">Nutrition Snapshot</h2>
+        <p class="section__subtitle">Today's macro composition and target progress.</p>
+
+        <div class="charts reveal">
+          <!-- Donut chart -->
+          <article class="chart-card" aria-label="Macronutrient composition">
+            <h3 style="margin: 0 0 0.5rem">Macro Composition</h3>
+            <div class="donut-wrap">
+              <svg class="donut-svg" id="macro-donut" viewBox="0 0 140 140" role="img" aria-label="Macro composition">
+                <g transform="rotate(-90 70 70)">
+                  <circle class="track" cx="70" cy="70" r="52" />
+                  <circle class="seg seg--carb" cx="70" cy="70" r="52" pathLength="100" />
+                  <circle class="seg seg--protein" cx="70" cy="70" r="52" pathLength="100" />
+                  <circle class="seg seg--fat" cx="70" cy="70" r="52" pathLength="100" />
+                  <circle class="ticks" cx="70" cy="70" r="58" pathLength="100" />
+                </g>
+              </svg>
+              <div class="center-stack">
+                <div class="center-kcal" id="macro-kcal">0</div>
+                <div class="center-sub">kcal today</div>
+              </div>
+              <div class="chart-tooltip" id="macro-tip"></div>
+            </div>
+            <div class="legend" id="macro-legend">
+              <span class="legend__item"
+                ><span class="dot" style="background: #f59e0b"></span>Carbs <span class="value" id="l-carb"></span
+              ></span>
+              <span class="legend__item"
+                ><span class="dot" style="background: #22c55e"></span>Protein <span class="value" id="l-protein"></span
+              ></span>
+              <span class="legend__item"
+                ><span class="dot" style="background: #60a5fa"></span>Fat <span class="value" id="l-fat"></span
+              ></span>
+            </div>
+            <div class="mode-toggle" id="unit-toggle">
+              <button data-mode="pct" class="active">%</button><button data-mode="g">g</button>
+            </div>
+          </article>
+
+          <!-- Progress rings -->
+          <article class="chart-card" aria-label="Targets progress">
+            <h3 style="margin: 0 0 0.5rem">Progress Today</h3>
+            <div class="rings">
+              <figure class="ringfig ringfig--carb">
+                <svg id="ring-carb" class="ring-svg" viewBox="0 0 120 120" role="img" aria-label="Carbs progress">
+                  <g transform="rotate(-90 60 60)">
+                    <circle class="track" cx="60" cy="60" r="44" />
+                    <circle class="tick" cx="60" cy="60" r="44" pathLength="100" />
+                    <circle class="prog" cx="60" cy="60" r="44" pathLength="100" />
+                  </g>
+                  <text class="val" x="60" y="60" text-anchor="middle" dominant-baseline="middle">0%</text>
+                </svg>
+                <div class="ring__label">Carbs</div>
+              </figure>
+              <figure class="ringfig ringfig--protein">
+                <svg id="ring-protein" class="ring-svg" viewBox="0 0 120 120" role="img" aria-label="Protein progress">
+                  <g transform="rotate(-90 60 60)">
+                    <circle class="track" cx="60" cy="60" r="44" />
+                    <circle class="tick" cx="60" cy="60" r="44" pathLength="100" />
+                    <circle class="prog" cx="60" cy="60" r="44" pathLength="100" />
+                  </g>
+                  <text class="val" x="60" y="60" text-anchor="middle" dominant-baseline="middle">0%</text>
+                </svg>
+                <div class="ring__label">Protein</div>
+              </figure>
+              <figure class="ringfig ringfig--fat">
+                <svg id="ring-fat" class="ring-svg" viewBox="0 0 120 120" role="img" aria-label="Fat progress">
+                  <g transform="rotate(-90 60 60)">
+                    <circle class="track" cx="60" cy="60" r="44" />
+                    <circle class="tick" cx="60" cy="60" r="44" pathLength="100" />
+                    <circle class="prog" cx="60" cy="60" r="44" pathLength="100" />
+                  </g>
+                  <text class="val" x="60" y="60" text-anchor="middle" dominant-baseline="middle">0%</text>
+                </svg>
+                <div class="ring__label">Fat</div>
+              </figure>
+            </div>
+            <div class="spark">
+              <div class="spark-head">
+                <span class="ttl">7‑day Intake</span><span class="meta">avg <span id="avg-kcal">0</span> kcal</span>
+              </div>
+              <svg class="spark-svg" id="kcal-spark" viewBox="0 0 140 70" role="img" aria-label="7-day intake"></svg>
+            </div>
+            <p class="section__subtitle" style="margin-top: 12px">
+              Relative to today's targets. Values >100% mean you've exceeded that macro target.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= Reviews ======= -->
+    <section id="reviews" class="section">
+      <div class="container">
+        <h2 class="section__title">What Our Users Say</h2>
+        <p class="section__subtitle">Real stories from people building healthier habits with CalMate.</p>
+        <div class="grid reviews">
+          <article class="card">
+            <div class="review__header">
+              <span class="avatar" aria-hidden="true">AL</span>
+              <div>
+                <strong>Alex Li</strong>
+                <div class="review__meta">Lost 4.2 kg in 8 weeks</div>
+              </div>
+            </div>
+            <div class="stars" aria-label="5 out of 5">★★★★★</div>
+            <p class="quote">
+              “Logging takes seconds, and the weekly insights make it obvious where to improve. Best habit app I've
+              tried.”
+            </p>
+          </article>
+          <article class="card">
+            <div class="review__header">
+              <span class="avatar" aria-hidden="true">JM</span>
+              <div>
+                <strong>Julia M.</strong>
+                <div class="review__meta">Busy parent · Evening logger</div>
+              </div>
+            </div>
+            <div class="stars" aria-label="5 out of 5">★★★★★</div>
+            <p class="quote">
+              “The balance view finally helps me connect meals with workouts. I actually feel in control.”
+            </p>
+          </article>
+          <article class="card">
+            <div class="review__header">
+              <span class="avatar" aria-hidden="true">KS</span>
+              <div>
+                <strong>Kevin S.</strong>
+                <div class="review__meta">Macro tracking · 12 weeks</div>
+              </div>
+            </div>
+            <div class="stars" aria-label="4 out of 5">★★★★☆</div>
+            <p class="quote">“Clean design, fast scanning, and thoughtful tips. Exactly the combo I needed.”</p>
+          </article>
+          <article class="card">
+            <div class="review__header">
+              <span class="avatar" aria-hidden="true">ZY</span>
+              <div>
+                <strong>Zhang Yu</strong>
+                <div class="review__meta">Runner · Morning logger</div>
+              </div>
+            </div>
+            <div class="stars" aria-label="5 out of 5">★★★★★</div>
+            <p class="quote">“界面清爽、记录超快，每周总结很有用，能看清自己的进步。”</p>
+          </article>
+          <article class="card">
+            <div class="review__header">
+              <span class="avatar" aria-hidden="true">AN</span>
+              <div>
+                <strong>Anita N.</strong>
+                <div class="review__meta">Vegetarian · 6 months</div>
+              </div>
+            </div>
+            <div class="stars" aria-label="5 out of 5">★★★★★</div>
+            <p class="quote">
+              “Recipe logging is painless, and the nutrient breakdowns helped me fix low protein days.”
+            </p>
+          </article>
+          <article class="card">
+            <div class="review__header">
+              <span class="avatar" aria-hidden="true">DW</span>
+              <div>
+                <strong>David W.</strong>
+                <div class="review__meta">Desk worker · Habit builder</div>
+              </div>
+            </div>
+            <div class="stars" aria-label="4 out of 5">★★★★☆</div>
+            <p class="quote">“Love the reminders and weekly nudges. Small changes added up fast.”</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section">
+      <div class="container">
+        <h2 class="section__title">FAQ</h2>
+        <p class="section__subtitle">Quick answers to common questions.</p>
+        <details class="faq">
+          <summary>How does Cal Expert calculate daily calorie needs?</summary>
+          <p>
+            We estimate your BMR from height, weight, age, and activity level, then adjust for your goal to recommend a
+            daily intake target.
+          </p>
+        </details>
+        <details class="faq">
+          <summary>Is my data private and secure?</summary>
+          <p>Your data stays private and is never sold. You can export or delete it anytime from the app settings.</p>
+        </details>
+        <details class="faq">
+          <summary>What do I get for free?</summary>
+          <p>
+            Free includes the basic food database, daily logging, and reminders. Advanced features like barcode scanning
+            and weekly insights are coming soon.
+          </p>
+        </details>
+        <details class="faq">
+          <summary>How can I contact support?</summary>
+          <p>
+            Click
+            <a
+              href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
+              >Contact</a
+            >
+            to email us directly. We usually reply within 2–3 business days.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <a class="brand" href="#">
+          <img src="images/logo.png" width="32" height="32" alt="Cal Expert" />
+          <span>Cal Expert</span>
+        </a>
+        <nav class="footer__nav">
+          <a href="#why">Features</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#faq">FAQ</a>
+          <a
+            href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
+            >Contact</a
+          >
+        </nav>
+        <p class="fine">© <span id="year"></span> Cal Expert. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Mobile nav
+      const hamburger = document.getElementById('hamburger');
+      const nav = document.getElementById('nav');
+      hamburger?.addEventListener('click', () => {
+        const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', String(!expanded));
+        nav.classList.toggle('open');
       });
-    }, {threshold: 0.35});
-    document.querySelectorAll('.kpi__num').forEach(el=>kpiObserver.observe(el));
 
-    // Charts setup (SVG donut + rings + tooltip + sparkline)
-    (function(){
-      const donut = document.getElementById('macro-donut');
-      if(!donut) return;
+      // Header shadow on scroll
+      const header = document.querySelector('.header');
+      const onScroll = () => (header.dataset.scrolled = window.scrollY > 8);
+      window.addEventListener('scroll', onScroll);
+      onScroll();
 
-      // ===== Demo data (edit here) =====
-      const totalKcal = 1850;
-      const macros = { carbs: 45, protein: 30, fat: 25 }; // % of calories
-      const targets = { carbs: 50, protein: 30, fat: 20 }; // % goals
-      const trend = [1820,1950,1750,2100,1880,1920,1850]; // 7-day kcal
+      // Reveal on scroll
+      const io = new IntersectionObserver(
+        entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.16 }
+      );
+      document.querySelectorAll('.reveal').forEach((el, i) => {
+        el.style.transitionDelay = getComputedStyle(el).getPropertyValue('--d') || `${i * 0.06}s`;
+        io.observe(el);
+      });
 
-      // ===== Donut rendering (pathLength = 100) =====
-      const segCarb = donut.querySelector('.seg--carb');
-      const segPro  = donut.querySelector('.seg--protein');
-      const segFat  = donut.querySelector('.seg--fat');
-      const GAP = 1.2; // visual gap in %
-
-      function setSeg(el, pct, offset){
-        const visible = Math.max(0, pct - 0.6); // thin gap
-        el.style.strokeDasharray = `${visible} ${100-visible}`;
-        el.style.strokeDashoffset = `${100 - offset}`;
+      // Respect reduced-motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.reveal').forEach(el => {
+          el.style.transition = 'none';
+          el.style.opacity = 1;
+          el.style.transform = 'none';
+        });
       }
-      function drawDonut(){
-        let off = 0;
-        setSeg(segCarb, macros.carbs, off); off += macros.carbs + GAP;
-        setSeg(segPro,  macros.protein, off); off += macros.protein + GAP;
-        setSeg(segFat,  macros.fat, off);
-      }
 
-      // Center numbers + legend with grams
-      const grams = {
-        carbs: Math.round(totalKcal * macros.carbs/100 / 4),
-        protein: Math.round(totalKcal * macros.protein/100 / 4),
-        fat: Math.round(totalKcal * macros.fat/100 / 9),
-      };
-      const kcalEl = document.getElementById('macro-kcal'); if(kcalEl) kcalEl.textContent = totalKcal.toLocaleString();
+      // KPI count up on view
+      const kpiObserver = new IntersectionObserver(
+        entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) {
+              const el = e.target;
+              const target = parseFloat(el.dataset.target || '0');
+              const decimals = parseInt(el.dataset.decimals || '0', 10);
+              const suffix = el.dataset.suffix || '';
+              const duration = 900;
+              const start = performance.now();
+              function tick(t) {
+                const p = Math.min(1, (t - start) / duration);
+                const val = target * p;
+                el.textContent = val.toFixed(decimals) + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
+              kpiObserver.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.35 }
+      );
+      document.querySelectorAll('.kpi__num').forEach(el => kpiObserver.observe(el));
 
-      // Legend toggle % / g
-      let mode = 'pct';
-      function renderLegend(){
-        document.getElementById('l-carb').textContent = mode==='g' ? `· ${grams.carbs}g` : `· ${macros.carbs}%`;
-        document.getElementById('l-protein').textContent = mode==='g' ? `· ${grams.protein}g` : `· ${macros.protein}%`;
-        document.getElementById('l-fat').textContent = mode==='g' ? `· ${grams.fat}g` : `· ${macros.fat}%`;
-      }
-      renderLegend();
-      const toggle = document.getElementById('unit-toggle');
-      toggle?.addEventListener('click', (e)=>{
-        const btn = e.target.closest('button'); if(!btn) return;
-        mode = btn.dataset.mode; toggle.querySelectorAll('button').forEach(b=>b.classList.toggle('active', b===btn));
+      // Charts setup (SVG donut + rings + tooltip + sparkline)
+      (function () {
+        const donut = document.getElementById('macro-donut');
+        if (!donut) return;
+
+        // ===== Demo data (edit here) =====
+        const totalKcal = 1850;
+        const macros = { carbs: 45, protein: 30, fat: 25 }; // % of calories
+        const targets = { carbs: 50, protein: 30, fat: 20 }; // % goals
+        const trend = [1820, 1950, 1750, 2100, 1880, 1920, 1850]; // 7-day kcal
+
+        // ===== Donut rendering (pathLength = 100) =====
+        const segCarb = donut.querySelector('.seg--carb');
+        const segPro = donut.querySelector('.seg--protein');
+        const segFat = donut.querySelector('.seg--fat');
+        const GAP = 1.2; // visual gap in %
+
+        function setSeg(el, pct, offset) {
+          const visible = Math.max(0, pct - 0.6); // thin gap
+          el.style.strokeDasharray = `${visible} ${100 - visible}`;
+          el.style.strokeDashoffset = `${100 - offset}`;
+        }
+        function drawDonut() {
+          let off = 0;
+          setSeg(segCarb, macros.carbs, off);
+          off += macros.carbs + GAP;
+          setSeg(segPro, macros.protein, off);
+          off += macros.protein + GAP;
+          setSeg(segFat, macros.fat, off);
+        }
+
+        // Center numbers + legend with grams
+        const grams = {
+          carbs: Math.round((totalKcal * macros.carbs) / 100 / 4),
+          protein: Math.round((totalKcal * macros.protein) / 100 / 4),
+          fat: Math.round((totalKcal * macros.fat) / 100 / 9),
+        };
+        const kcalEl = document.getElementById('macro-kcal');
+        if (kcalEl) kcalEl.textContent = totalKcal.toLocaleString();
+
+        // Legend toggle % / g
+        let mode = 'pct';
+        function renderLegend() {
+          document.getElementById('l-carb').textContent = mode === 'g' ? `· ${grams.carbs}g` : `· ${macros.carbs}%`;
+          document.getElementById('l-protein').textContent =
+            mode === 'g' ? `· ${grams.protein}g` : `· ${macros.protein}%`;
+          document.getElementById('l-fat').textContent = mode === 'g' ? `· ${grams.fat}g` : `· ${macros.fat}%`;
+        }
         renderLegend();
-      });
+        const toggle = document.getElementById('unit-toggle');
+        toggle?.addEventListener('click', e => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          mode = btn.dataset.mode;
+          toggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+          renderLegend();
+        });
 
-      // Tooltip on donut
-      const tip = document.getElementById('macro-tip');
-      const wrap = donut.closest('.donut-wrap');
-      donut.addEventListener('mousemove', (e)=>{
-        const rect = donut.getBoundingClientRect();
-        const sx = 140/rect.width, sy = 140/rect.height;
-        const vx = (e.clientX - rect.left) * sx; // viewBox coords
-        const vy = (e.clientY - rect.top)  * sy;
-        const dx = vx - 70, dy = vy - 70;
-        const r = Math.hypot(dx,dy);
-        if(r < 42 || r > 80){ tip.classList.remove('show'); return; }
-        let ang = (Math.atan2(dy,dx) * 180/Math.PI + 360) % 360; // 0 at 3 o'clock
-        ang = (ang + 90) % 360; // align with -90deg rotation used in SVG
-        const p = ang / 360 * 100;
-        const g1 = macros.carbs, g2 = g1 + GAP, g3 = g2 + macros.protein, g4 = g3 + GAP, g5 = g4 + macros.fat;
-        let name, valPct, valG;
-        if(p < g1){ name='Carbs'; valPct=macros.carbs; valG=grams.carbs; }
-        else if(p>=g2 && p<g3){ name='Protein'; valPct=macros.protein; valG=grams.protein; }
-        else if(p>=g4 && p<g5){ name='Fat'; valPct=macros.fat; valG=grams.fat; }
-        else { tip.classList.remove('show'); return; } // gaps
-        const txt = mode==='g' ? `${name}: ${valG} g` : `${name}: ${valPct}%`;
-        tip.textContent = txt;
-        const wrect = wrap.getBoundingClientRect();
-        tip.style.left = (e.clientX - wrect.left) + 'px';
-        tip.style.top  = (e.clientY - wrect.top) + 'px';
-        tip.classList.add('show');
-      });
-      donut.addEventListener('mouseleave', ()=>tip.classList.remove('show'));
+        // Tooltip on donut
+        const tip = document.getElementById('macro-tip');
+        const wrap = donut.closest('.donut-wrap');
+        donut.addEventListener('mousemove', e => {
+          const rect = donut.getBoundingClientRect();
+          const sx = 140 / rect.width,
+            sy = 140 / rect.height;
+          const vx = (e.clientX - rect.left) * sx; // viewBox coords
+          const vy = (e.clientY - rect.top) * sy;
+          const dx = vx - 70,
+            dy = vy - 70;
+          const r = Math.hypot(dx, dy);
+          if (r < 42 || r > 80) {
+            tip.classList.remove('show');
+            return;
+          }
+          let ang = ((Math.atan2(dy, dx) * 180) / Math.PI + 360) % 360; // 0 at 3 o'clock
+          ang = (ang + 90) % 360; // align with -90deg rotation used in SVG
+          const p = (ang / 360) * 100;
+          const g1 = macros.carbs,
+            g2 = g1 + GAP,
+            g3 = g2 + macros.protein,
+            g4 = g3 + GAP,
+            g5 = g4 + macros.fat;
+          let name, valPct, valG;
+          if (p < g1) {
+            name = 'Carbs';
+            valPct = macros.carbs;
+            valG = grams.carbs;
+          } else if (p >= g2 && p < g3) {
+            name = 'Protein';
+            valPct = macros.protein;
+            valG = grams.protein;
+          } else if (p >= g4 && p < g5) {
+            name = 'Fat';
+            valPct = macros.fat;
+            valG = grams.fat;
+          } else {
+            tip.classList.remove('show');
+            return;
+          } // gaps
+          const txt = mode === 'g' ? `${name}: ${valG} g` : `${name}: ${valPct}%`;
+          tip.textContent = txt;
+          const wrect = wrap.getBoundingClientRect();
+          tip.style.left = e.clientX - wrect.left + 'px';
+          tip.style.top = e.clientY - wrect.top + 'px';
+          tip.classList.add('show');
+        });
+        donut.addEventListener('mouseleave', () => tip.classList.remove('show'));
 
-      // ===== Rings =====
-      function initRing(svgId, pct){
-        const svg = document.getElementById(svgId);
-        const prog = svg.querySelector('.prog');
-        const val  = svg.querySelector('.val');
-        let cur=0; const step=()=>{ cur += Math.max(1, Math.round(pct/28)); if(cur>pct) cur=pct; prog.style.strokeDasharray = `${cur} ${100-cur}`; val.textContent = `${cur}%`; if(cur<pct) requestAnimationFrame(step); };
-        requestAnimationFrame(step);
-      }
-      const clamp = v=>Math.max(0, Math.min(140, v));
-      const cPct = clamp(Math.round(macros.carbs/targets.carbs*100));
-      const pPct = clamp(Math.round(macros.protein/targets.protein*100));
-      const fPct = clamp(Math.round(macros.fat/targets.fat*100));
+        // ===== Rings =====
+        function initRing(svgId, pct) {
+          const svg = document.getElementById(svgId);
+          const prog = svg.querySelector('.prog');
+          const val = svg.querySelector('.val');
+          let cur = 0;
+          const step = () => {
+            cur += Math.max(1, Math.round(pct / 28));
+            if (cur > pct) cur = pct;
+            prog.style.strokeDasharray = `${cur} ${100 - cur}`;
+            val.textContent = `${cur}%`;
+            if (cur < pct) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+        const clamp = v => Math.max(0, Math.min(140, v));
+        const cPct = clamp(Math.round((macros.carbs / targets.carbs) * 100));
+        const pPct = clamp(Math.round((macros.protein / targets.protein) * 100));
+        const fPct = clamp(Math.round((macros.fat / targets.fat) * 100));
 
-      // ===== Sparkline (7-day intake) =====
-      (function(){
-        const svg = document.getElementById('kcal-spark'); if(!svg) return;
-        const w=140, h=70, pad=6; const ns='http://www.w3.org/2000/svg';
-        const min = Math.min(...trend), max = Math.max(...trend);
-        const xr = (i)=> pad + i * ((w-2*pad) / (trend.length-1));
-        const yr = (v)=> h - pad - ((v - min) / ((max-min)||1)) * (h - 2*pad);
-        let d = `M ${xr(0)} ${yr(trend[0])}`; for(let i=1;i<trend.length;i++){ d += ` L ${xr(i)} ${yr(trend[i])}`; }
-        const area = d + ` L ${xr(trend.length-1)} ${h-pad} L ${xr(0)} ${h-pad} Z`;
-        svg.innerHTML='';
-        const pathArea=document.createElementNS(ns,'path'); pathArea.setAttribute('d', area); pathArea.setAttribute('class','area'); svg.appendChild(pathArea);
-        const pathLine=document.createElementNS(ns,'path'); pathLine.setAttribute('d', d); pathLine.setAttribute('class','line'); svg.appendChild(pathLine);
-        const avg = trend.reduce((a,b)=>a+b,0)/trend.length; document.getElementById('avg-kcal').textContent = Math.round(avg);
-        const yAvg=yr(avg); const avgLine=document.createElementNS(ns,'line'); avgLine.setAttribute('x1', pad); avgLine.setAttribute('x2', w-pad); avgLine.setAttribute('y1', yAvg); avgLine.setAttribute('y2', yAvg); avgLine.setAttribute('class','avg'); svg.appendChild(avgLine);
-        const dot=document.createElementNS(ns,'circle'); dot.setAttribute('cx', xr(trend.length-1)); dot.setAttribute('cy', yr(trend[trend.length-1])); dot.setAttribute('r','2.8'); dot.setAttribute('class','dot'); svg.appendChild(dot);
+        // ===== Sparkline (7-day intake) =====
+        (function () {
+          const svg = document.getElementById('kcal-spark');
+          if (!svg) return;
+          const w = 140,
+            h = 70,
+            pad = 6;
+          const ns = 'http://www.w3.org/2000/svg';
+          const min = Math.min(...trend),
+            max = Math.max(...trend);
+          const xr = i => pad + i * ((w - 2 * pad) / (trend.length - 1));
+          const yr = v => h - pad - ((v - min) / (max - min || 1)) * (h - 2 * pad);
+          let d = `M ${xr(0)} ${yr(trend[0])}`;
+          for (let i = 1; i < trend.length; i++) {
+            d += ` L ${xr(i)} ${yr(trend[i])}`;
+          }
+          const area = d + ` L ${xr(trend.length - 1)} ${h - pad} L ${xr(0)} ${h - pad} Z`;
+          svg.innerHTML = '';
+          const pathArea = document.createElementNS(ns, 'path');
+          pathArea.setAttribute('d', area);
+          pathArea.setAttribute('class', 'area');
+          svg.appendChild(pathArea);
+          const pathLine = document.createElementNS(ns, 'path');
+          pathLine.setAttribute('d', d);
+          pathLine.setAttribute('class', 'line');
+          svg.appendChild(pathLine);
+          const avg = trend.reduce((a, b) => a + b, 0) / trend.length;
+          document.getElementById('avg-kcal').textContent = Math.round(avg);
+          const yAvg = yr(avg);
+          const avgLine = document.createElementNS(ns, 'line');
+          avgLine.setAttribute('x1', pad);
+          avgLine.setAttribute('x2', w - pad);
+          avgLine.setAttribute('y1', yAvg);
+          avgLine.setAttribute('y2', yAvg);
+          avgLine.setAttribute('class', 'avg');
+          svg.appendChild(avgLine);
+          const dot = document.createElementNS(ns, 'circle');
+          dot.setAttribute('cx', xr(trend.length - 1));
+          dot.setAttribute('cy', yr(trend[trend.length - 1]));
+          dot.setAttribute('r', '2.8');
+          dot.setAttribute('class', 'dot');
+          svg.appendChild(dot);
+        })();
+
+        // Animate when section is visible
+        const section = document.getElementById('snapshot');
+        const once = new IntersectionObserver(
+          entries => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                drawDonut();
+                initRing('ring-carb', cPct);
+                initRing('ring-protein', pPct);
+                initRing('ring-fat', fPct);
+                once.disconnect();
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        once.observe(section);
       })();
 
-      // Animate when section is visible
-      const section = document.getElementById('snapshot');
-      const once = new IntersectionObserver((entries)=>{
-        entries.forEach(e=>{
-          if(e.isIntersecting){
-            drawDonut();
-            initRing('ring-carb', cPct);
-            initRing('ring-protein', pPct);
-            initRing('ring-fat', fPct);
-            once.disconnect();
-          }
-        });
-      }, {threshold: .1});
-      once.observe(section);
-    })();
-
-    // Year
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-</body>
+      // Year
+      // Year
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
 </html>
-
