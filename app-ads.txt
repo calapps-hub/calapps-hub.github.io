@@ -1,8 +1,7 @@
-# Admob
-google.com, pub-5454612519344873, DIRECT, f08c47fec0942fa0
+# Updated at 2025/09/16 10:22:38
 
-# Facebook
-facebook.com, 2403290579831579, DIRECT, c3e20eee3f780d68
+# Admob
+google.com,pub-5454612519344873,DIRECT,f08c47fec0942fa0
 
 # Applovin
 applovin.com,fb6a91c6f9942cfa113bc7ceef4752b3,DIRECT
@@ -37,3 +36,6 @@ video.unrulymedia.com,322585001,RESELLER
 xandr.com,13799,RESELLER
 xandr.com,14082,RESELLER
 zmaticoo.com,5135655,RESELLER
+
+# Facebook
+facebook.com,2403290579831579,DIRECT,c3e20eee3f780d68
