@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["2287MF946H.com.calapps.fit.calmanage"],
+        "components": [
+          {
+            "/": "/start/*",
+            "comment": "Start path"
+          }
+        ]
+      }
+    ]
+  }
+}
