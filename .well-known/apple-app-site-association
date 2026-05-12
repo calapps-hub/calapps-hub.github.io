@@ -2,7 +2,7 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["2287MF946H.com.calapps.fit.calmanage"],
+        "appIDs": ["7FTDGAGQH5.com.calapps.fit.calmanage"],
         "components": [
           {
             "/": "/start/*",
