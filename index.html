@@ -8,7 +8,7 @@
       name="description"
       content="Cal Expert helps you log meals, track calories, and turn insights into healthier habits."
     />
-    <meta name="theme-color" content="#16a34a" />
+    <meta name="theme-color" content="#101115" />
     <!-- Open Graph -->
     <meta property="og:title" content="Cal Expert — Smarter Calorie Tracking" />
     <meta
@@ -18,25 +18,25 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://calapps-hub.github.io" />
     <!-- Favicon (none on purpose) -->
-    <link rel="icon" href="./images/favicon.ico" />
+    <link rel="icon" href="https://calapps-hub.github.io/images/logo.png" />
     <style>
       /* ======= Design Tokens ======= */
       :root {
-        --bg: #0b1110;
-        --bg-2: #0e1614;
-        --surface: #101a13;
-        --glass: rgba(255, 255, 255, 0.06);
-        --border: rgba(255, 255, 255, 0.08);
-        --ring: rgba(34, 197, 94, 0.35);
-        --text: #e7f4ec;
-        --muted: #a2b7ac;
-        --fine: #8aa095;
-        --g-300: #86efac;
-        --g-400: #34d399;
-        --g-500: #22c55e;
-        --g-600: #16a34a;
-        --radius: 16px;
-        --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        --bg: #101115;
+        --bg-2: #171920;
+        --surface: #1b1d24;
+        --glass: #f7f8fb;
+        --border: rgba(255, 255, 255, 0.1);
+        --ring: rgba(7, 199, 111, 0.22);
+        --text: #f7f8fb;
+        --muted: #a4a9b5;
+        --fine: #777f8f;
+        --g-300: #75e8ae;
+        --g-400: #18d982;
+        --g-500: #05c978;
+        --g-600: #06b66e;
+        --radius: 14px;
+        --shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
       }
       * {
         box-sizing: border-box;
@@ -48,9 +48,9 @@
         margin: 0;
         color: var(--text);
         font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        background: radial-gradient(900px 500px at 10% -10%, rgba(34, 197, 94, 0.22), transparent 55%),
-          radial-gradient(900px 500px at 90% 0%, rgba(52, 211, 153, 0.2), transparent 55%),
-          linear-gradient(180deg, var(--bg), var(--bg-2) 40%, var(--bg));
+        background: radial-gradient(760px 420px at 16% -10%, rgba(5, 201, 120, 0.12), transparent 58%),
+          radial-gradient(700px 420px at 88% 0%, rgba(255, 159, 64, 0.1), transparent 58%),
+          linear-gradient(180deg, #0f1014 0%, var(--bg) 38%, var(--bg-2) 100%);
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
       }
@@ -69,20 +69,20 @@
         position: sticky;
         top: 0;
         z-index: 40;
-        background: linear-gradient(180deg, rgba(16, 26, 19, 0.7), rgba(16, 26, 19, 0.35));
+        background: rgba(16, 17, 21, 0.82);
         backdrop-filter: saturate(130%) blur(8px);
         border-bottom: 1px solid transparent;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
       .header[data-scrolled='true'] {
         border-color: var(--border);
-        box-shadow: var(--shadow);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
       }
       .header__inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 0;
+        padding: 14px 24px;
       }
       .brand {
         display: flex;
@@ -91,8 +91,13 @@
         letter-spacing: 0.2px;
         gap: 10px;
       }
-      .brand img {
-        margin-top: -2px;
+      .brand__logo {
+        width: 32px;
+        height: 32px;
+        display: block;
+        border-radius: 10px;
+        object-fit: cover;
+        box-shadow: 0 10px 24px rgba(255, 146, 49, 0.22);
       }
       .nav {
         display: flex;
@@ -116,7 +121,7 @@
         display: block;
         width: 22px;
         height: 2px;
-        background: #cfe7d8;
+        background: #f7f8fb;
         margin: 4px 0;
         border-radius: 2px;
       }
@@ -130,7 +135,7 @@
         padding: 0.85rem 1.15rem;
         border-radius: 999px;
         border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255, 255, 255, 0.04);
         color: var(--text);
         font-weight: 700;
         transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
@@ -141,10 +146,11 @@
       .btn--primary {
         background: linear-gradient(180deg, var(--g-500), var(--g-600));
         border-color: transparent;
-        box-shadow: 0 14px 30px rgba(34, 197, 94, 0.25);
+        color: #ffffff;
+        box-shadow: 0 14px 30px rgba(5, 201, 120, 0.24);
       }
       .btn--ghost {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.04);
       }
       .btn--sm {
         padding: 0.6rem 0.9rem;
@@ -163,7 +169,7 @@
         grid-template-columns: 1.1fr 0.9fr;
         gap: 40px;
         align-items: center;
-        padding: 64px 0 24px;
+        padding: 58px 24px 32px;
       }
       .eyebrow {
         display: inline-block;
@@ -179,7 +185,7 @@
         margin: 0.2rem 0 0.7rem;
       }
       .accent {
-        background: linear-gradient(90deg, var(--g-400), var(--g-600));
+        background: linear-gradient(90deg, var(--g-500), var(--g-600));
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
@@ -200,10 +206,10 @@
         padding: 0;
         margin: 14px 0 0;
         list-style: none;
-        color: #d8eee3;
+        color: #eef2f7;
       }
       .badges li {
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(255, 255, 255, 0.055);
         border: 1px solid var(--border);
         padding: 0.45rem 0.7rem;
         border-radius: 999px;
@@ -211,18 +217,21 @@
       }
       .badges li:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
       }
 
       /* Preview Card */
       .glasscard {
         background: var(--glass);
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 22px;
+        color: #171821;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 28px;
+        padding: 18px;
         box-shadow: var(--shadow);
         backdrop-filter: blur(10px) saturate(120%);
         animation: floatIn 0.5s ease both;
+        max-width: 360px;
+        margin-left: auto;
       }
       @keyframes floatIn {
         from {
@@ -238,26 +247,39 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 10px;
+        margin-bottom: 14px;
+        padding: 4px 2px 0;
       }
-      .chip {
+      .glasscard .chip {
         font-size: 0.75rem;
         padding: 0.18rem 0.55rem;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid var(--border);
-        color: #d7eee2;
+        background: #ecfff5;
+        border: 1px solid #d8f6e8;
+        color: #06b66e;
       }
       .stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
+        gap: 8px;
         margin: 12px 0 16px;
+      }
+      .stats > div {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 12px 10px;
+        text-align: center;
+        box-shadow: inset 0 0 0 1px #edf0f4;
       }
       .stat__label {
         display: block;
         color: var(--muted);
         font-size: 0.9rem;
+      }
+      .glasscard .stat__label,
+      .glasscard .muted,
+      .chart-card .section__subtitle {
+        color: #6d7280;
       }
       .stat__value {
         font-weight: 800;
@@ -267,8 +289,8 @@
       }
       .progress {
         height: 10px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid var(--border);
+        background: #eef1f5;
+        border: 1px solid #e5e9ef;
         border-radius: 999px;
         overflow: hidden;
       }
@@ -279,10 +301,15 @@
 
       /* ======= Sections ======= */
       .section {
-        padding: 72px 0;
+        padding: 64px 0;
+        scroll-margin-top: 84px;
+      }
+      .hero,
+      .footer {
+        scroll-margin-top: 84px;
       }
       .section--tint {
-        background: rgba(255, 255, 255, 0.02);
+        background: rgba(255, 255, 255, 0.035);
         border-top: 1px solid var(--border);
         border-bottom: 1px solid var(--border);
         position: relative;
@@ -293,8 +320,8 @@
         content: '';
         position: absolute;
         inset: -20%;
-        background: radial-gradient(60% 40% at 10% 20%, rgba(34, 197, 94, 0.14), transparent 60%),
-          radial-gradient(60% 40% at 90% 30%, rgba(52, 211, 153, 0.12), transparent 60%);
+        background: radial-gradient(60% 40% at 10% 20%, rgba(5, 201, 120, 0.1), transparent 60%),
+          radial-gradient(60% 40% at 90% 30%, rgba(72, 145, 255, 0.08), transparent 60%);
         filter: blur(10px);
         animation: bgFlow 18s linear infinite;
         pointer-events: none;
@@ -328,15 +355,15 @@
         position: relative;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 18px;
         padding: 18px 18px 20px;
         box-shadow: var(--shadow);
         transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
       }
       .why__card:hover {
         transform: translateY(-3px);
-        box-shadow: 0 28px 70px rgba(22, 163, 74, 0.18);
-        border-color: rgba(34, 197, 94, 0.35);
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+        border-color: rgba(5, 201, 120, 0.28);
       }
       .why__icon {
         font-size: 1.4rem;
@@ -357,7 +384,7 @@
       .kpi {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 18px;
         padding: 24px;
         text-align: center;
       }
@@ -382,7 +409,7 @@
       .trust__card {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 18px;
         padding: 18px;
         box-shadow: var(--shadow);
         transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.6s ease;
@@ -392,22 +419,22 @@
         content: '';
         position: absolute;
         inset: 0;
-        border-radius: 20px;
+        border-radius: 18px;
         pointer-events: none;
         box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
         transition: box-shadow 0.6s ease;
       }
       .trust__card:hover {
         transform: translateY(-3px);
-        border-color: rgba(34, 197, 94, 0.35);
+        border-color: rgba(5, 201, 120, 0.28);
       }
       .trust__card:hover::after {
-        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25), 0 0 24px 6px rgba(34, 197, 94, 0.12);
+        box-shadow: 0 0 0 2px rgba(5, 201, 120, 0.18), 0 0 24px 6px rgba(5, 201, 120, 0.08);
         animation: glowPulse 2.8s ease-in-out infinite;
       }
       .trust__card:hover {
         transform: translateY(-3px);
-        border-color: rgba(34, 197, 94, 0.35);
+        border-color: rgba(5, 201, 120, 0.28);
       }
       .trust__title {
         margin: 0.1rem 0 0.25rem;
@@ -415,6 +442,52 @@
       }
       .trust__desc {
         color: var(--muted);
+      }
+
+      /* ======= AI Coach ======= */
+      .coach {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+      .coach__panel {
+        background: linear-gradient(180deg, rgba(5, 201, 120, 0.16), rgba(255, 255, 255, 0.045));
+        border: 1px solid rgba(5, 201, 120, 0.24);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: var(--shadow);
+      }
+      .coach__panel h3,
+      .coach__item h3 {
+        margin: 0 0 0.35rem;
+      }
+      .coach__panel p,
+      .coach__item p {
+        color: var(--muted);
+        margin: 0;
+      }
+      .coach__list {
+        display: grid;
+        gap: 12px;
+      }
+      .coach__item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+      }
+      .coach__tag {
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 0.3rem 0.65rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        color: var(--g-300);
+        font-weight: 800;
+        font-size: 0.85rem;
       }
 
       /* ======= Goals (chips) ======= */
@@ -433,7 +506,7 @@
         padding: 0.6rem 0.9rem;
         border-radius: 999px;
         border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(255, 255, 255, 0.055);
       }
 
       /* ======= Charts (Snapshot) ======= */
@@ -444,9 +517,10 @@
         align-items: stretch;
       }
       .chart-card {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 20px;
+        background: #f7f8fb;
+        color: #171821;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 18px;
         padding: 18px;
         box-shadow: var(--shadow);
       }
@@ -467,7 +541,7 @@
       }
       .donut-svg .track {
         fill: none;
-        stroke: rgba(255, 255, 255, 0.08);
+        stroke: #edf0f4;
         stroke-width: 18;
       }
       .donut-svg .seg {
@@ -488,7 +562,7 @@
       }
       .donut-svg .ticks {
         fill: none;
-        stroke: rgba(255, 255, 255, 0.1);
+        stroke: #e3e7ee;
         stroke-width: 2;
         stroke-dasharray: 2 6;
       }
@@ -506,7 +580,7 @@
         font-size: 1.5rem;
       }
       .center-sub {
-        color: var(--muted);
+        color: #6d7280;
         font-size: 0.95rem;
         margin-top: 0.15rem;
       }
@@ -522,9 +596,16 @@
         align-items: center;
         gap: 0.45rem;
         padding: 0.35rem 0.6rem;
-        border: 1px solid var(--border);
+        border: 1px solid #e4e8ef;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.03);
+        background: #f7f8fb;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        display: inline-block;
+        border-radius: 50%;
+        flex: 0 0 auto;
       }
       .legend__item .value {
         opacity: 0.85;
@@ -539,24 +620,25 @@
         margin-top: 6px;
       }
       .mode-toggle button {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid var(--border);
+        background: #f7f8fb;
+        border: 1px solid #e4e8ef;
         padding: 0.28rem 0.6rem;
         border-radius: 999px;
-        color: #cfe7d8;
+        color: #3b4250;
         font-weight: 700;
         cursor: pointer;
       }
       .mode-toggle button.active {
         background: linear-gradient(180deg, var(--g-500), var(--g-600));
         border-color: transparent;
-        color: #0b1110;
+        color: #ffffff;
       }
       .chart-tooltip {
         position: absolute;
         pointer-events: none;
-        background: rgba(16, 26, 19, 0.95);
-        border: 1px solid var(--border);
+        background: rgba(23, 24, 33, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: #ffffff;
         padding: 0.35rem 0.55rem;
         border-radius: 10px;
         font-size: 0.9rem;
@@ -583,7 +665,7 @@
         font-weight: 800;
       }
       .spark .spark-head .meta {
-        color: var(--muted);
+        color: #6d7280;
         font-size: 0.9rem;
       }
       .spark-svg {
@@ -597,16 +679,16 @@
         stroke-width: 2;
       }
       .spark-svg .area {
-        fill: rgba(52, 211, 153, 0.18);
+        fill: rgba(5, 201, 120, 0.16);
       }
       .spark-svg .avg {
-        stroke: rgba(255, 255, 255, 0.12);
+        stroke: #d8dde6;
         stroke-dasharray: 4 4;
         stroke-width: 1;
       }
       .spark-svg .dot {
         fill: #22c55e;
-        stroke: rgba(0, 0, 0, 0.35);
+        stroke: #ffffff;
         stroke-width: 1;
       }
 
@@ -620,6 +702,7 @@
       }
       .ringfig {
         text-align: center;
+        margin: 0;
       }
       .ringfig--carb {
         color: #f59e0b;
@@ -638,12 +721,12 @@
       }
       .ring-svg .track {
         fill: none;
-        stroke: rgba(255, 255, 255, 0.08);
+        stroke: #edf0f4;
         stroke-width: 14;
       }
       .ring-svg .tick {
         fill: none;
-        stroke: rgba(255, 255, 255, 0.1);
+        stroke: #e3e7ee;
         stroke-width: 2;
         stroke-dasharray: 2 6;
       }
@@ -657,10 +740,10 @@
       }
       .ring-svg text {
         font-weight: 800;
-        fill: #e7f4ec;
+        fill: #171821;
       }
       .ring__label {
-        color: var(--muted);
+        color: #6d7280;
         font-weight: 700;
         font-size: 0.9rem;
         margin-top: 6px;
@@ -699,7 +782,7 @@
         font-size: 1.05rem;
         letter-spacing: 2px;
         color: transparent;
-        background: linear-gradient(90deg, #d3efe2, #7ee4b3, #d3efe2);
+        background: linear-gradient(90deg, #18d982, #05c978, #18d982);
         background-size: 200% 100%;
         -webkit-background-clip: text;
         background-clip: text;
@@ -710,15 +793,15 @@
         font-size: 0.9rem;
       }
       .quote {
-        color: #d9eee4;
+        color: #d9dde6;
       }
       .reviews .card {
-        border-radius: 20px;
+        border-radius: 18px;
         transition: transform 0.25s ease, border-color 0.25s ease;
       }
       .reviews .card:hover {
         transform: translateY(-3px);
-        border-color: rgba(34, 197, 94, 0.35);
+        border-color: rgba(5, 201, 120, 0.28);
       }
 
       /* FAQ */
@@ -733,7 +816,7 @@
         font-weight: 700;
       }
       .faq p {
-        color: #d2e7db;
+        color: var(--muted);
         margin: 0.6rem 0 0;
       }
       .faq + .faq {
@@ -743,25 +826,56 @@
       /* Footer */
       .footer {
         border-top: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.02);
+        background: #111217;
       }
       .footer__inner {
         display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 14px;
-        align-items: center;
-        padding: 18px 0;
+        gap: 20px;
+        padding: 28px 24px 20px;
+      }
+      .footer__top {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr 0.9fr;
+        gap: 28px;
+        align-items: start;
+      }
+      .footer__copy {
+        color: var(--muted);
+        max-width: 38ch;
+        margin: 10px 0 0;
+      }
+      .footer__title {
+        color: #f7f8fb;
+        font-weight: 800;
+        margin-bottom: 8px;
       }
       .footer__nav {
         display: flex;
+        flex-direction: column;
+        gap: 8px;
+        color: var(--muted);
+      }
+      .footer__nav a:hover {
+        color: var(--text);
+      }
+      .footer__bottom {
+        display: flex;
+        justify-content: space-between;
         gap: 16px;
-        justify-content: center;
+        align-items: center;
+        border-top: 1px solid var(--border);
+        padding-top: 16px;
+      }
+      .legal {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        color: var(--fine);
       }
       .fine {
-        grid-column: 1/-1;
-        text-align: center;
         color: var(--fine);
         font-size: 0.95rem;
+        margin: 0;
       }
 
       /* ======= Motion ======= */
@@ -820,6 +934,18 @@
       @media (max-width: 980px) {
         .hero__grid {
           grid-template-columns: 1fr;
+          gap: 28px;
+          padding-top: 46px;
+        }
+        .glasscard {
+          margin-left: 0;
+          max-width: 520px;
+        }
+        .coach {
+          grid-template-columns: 1fr;
+        }
+        .footer__top {
+          grid-template-columns: 1fr 1fr;
         }
         .why {
           grid-template-columns: 1fr;
@@ -834,7 +960,7 @@
           grid-template-columns: repeat(2, 1fr);
         }
       }
-      @media (max-width: 760px) {
+      @media (max-width: 900px) {
         .nav {
           display: none;
           position: absolute;
@@ -854,6 +980,32 @@
         .hamburger {
           display: inline-block;
         }
+      }
+      @media (max-width: 760px) {
+        .container {
+          padding: 0 18px;
+        }
+        .header__inner {
+          padding: 12px 18px;
+        }
+        .hero__grid {
+          padding: 38px 18px 24px;
+        }
+        .section {
+          padding: 52px 0;
+        }
+        .actions {
+          flex-direction: column;
+        }
+        .hero h1 {
+          font-size: 2.05rem;
+        }
+        .btn {
+          width: 100%;
+        }
+        .glasscard {
+          border-radius: 22px;
+        }
         .reviews {
           grid-template-columns: 1fr;
         }
@@ -863,6 +1015,15 @@
         .trust {
           grid-template-columns: 1fr;
         }
+        .footer__top,
+        .footer__bottom {
+          grid-template-columns: 1fr;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .footer__inner {
+          padding: 26px 18px 20px;
+        }
       }
     </style>
   </head>
@@ -870,15 +1031,16 @@
     <header class="header" data-scrolled="false">
       <div class="container header__inner">
         <a class="brand" href="#">
-          <img src="images/logo.png" width="32" height="32" alt="Cal Expert" />
+          <img class="brand__logo" src="https://calapps-hub.github.io/images/logo.png" width="32" height="32" alt="Cal Expert logo" />
           <span>Cal Expert</span>
         </a>
         <nav class="nav" id="nav">
           <a href="#why">Why Cal Expert</a>
+          <a href="#coach">AI Coach</a>
           <a href="#reviews">Reviews</a>
           <a href="#faq">FAQ</a>
           <a
-            href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
+            href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&amp;body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
             >Contact</a
           >
         </nav>
@@ -889,29 +1051,32 @@
     <section class="hero" id="hero-cta">
       <div class="container hero__grid">
         <div class="hero__text">
-          <span class="eyebrow">Calorie & Nutrition</span>
-          <h1>Track calories. <span class="accent">Feel in control.</span></h1>
-          <p class="subtitle">Log meals in seconds, visualize intake vs. burn, and build habits that actually stick.</p>
+          <span class="eyebrow">AI Calorie Coach</span>
+          <h1>Calorie tracking, fasting, and habits in one clean app.</h1>
+          <p class="subtitle">
+            Cal Expert brings food logging, light fasting, water, exercise, and AI coaching into a simple daily home
+            screen.
+          </p>
           <div class="actions">
             <a href="#faq" class="btn btn--primary btn--lg">Read FAQ</a>
             <a href="#why" class="btn btn--ghost btn--lg">See Features</a>
           </div>
-          <ul class="badges reveal">
+          <ul class="badges">
             <li>⚡ Fast logging</li>
             <li>🔒 Privacy-first</li>
             <li>🤖 AI guidance</li>
-            <li>📈 Weekly insights</li>
+            <li>⏱ Light fasting</li>
           </ul>
         </div>
         <div class="glasscard" aria-label="Calorie balance preview">
-          <div class="glasscard__head"><strong>Today’s Balance</strong><span class="chip">Preview</span></div>
+          <div class="glasscard__head"><strong>Home Summary</strong><span class="chip">9:41</span></div>
           <div class="stats">
             <div><span class="stat__label">Intake</span><span class="stat__value">1,520 kcal</span></div>
             <div><span class="stat__label">Burned</span><span class="stat__value">1,860 kcal</span></div>
             <div><span class="stat__label">Net</span><span class="stat__value stat__value--good">-340 kcal</span></div>
           </div>
           <div class="progress" aria-label="Daily progress"><div class="progress__bar" style="width: 62%"></div></div>
-          <p class="muted">Log for 7 days to unlock weekly reports and personalized tips.</p>
+          <p class="muted">Smart food choices all day. Keep hydrated, keep healthy.</p>
         </div>
       </div>
     </section>
@@ -919,25 +1084,25 @@
     <section id="why" class="section">
       <div class="container">
         <h2 class="section__title">Why Cal Expert</h2>
-        <p class="section__subtitle">Three pillars that make tracking effortless and effective.</p>
+        <p class="section__subtitle">A daily dashboard for eating, fasting, movement, and progress.</p>
         <div class="grid why">
           <article class="why__card reveal" style="--d: 0s">
             <div class="why__icon">🍎</div>
             <h3 class="why__title">Smart Logging</h3>
             <p class="why__desc">
-              Barcode scan, rich food DB, and one‑tap portions so you can finish logging in seconds.
+              Food scan, saved foods, recipes, and voice logs make daily meal tracking quick.
             </p>
           </article>
           <article class="why__card reveal" style="--d: 0.08s">
             <div class="why__icon">🧠</div>
             <h3 class="why__title">Personal Coaching</h3>
-            <p class="why__desc">AI turns your week of meals into simple, actionable tips aligned with your goals.</p>
+            <p class="why__desc">AI Coach explains your calorie balance, fasting window, and next habit to improve.</p>
           </article>
           <article class="why__card reveal" style="--d: 0.16s">
             <div class="why__icon">📊</div>
             <h3 class="why__title">Deep Insights</h3>
             <p class="why__desc">
-              Clear macro trends, quality scores, and progress snapshots — with your privacy protected.
+              Macro trends, water progress, exercise burn, and weight records stay easy to scan.
             </p>
           </article>
         </div>
@@ -990,6 +1155,39 @@
 
     <!-- GOALS -->
     <!-- GOALS -->
+    <section id="coach" class="section">
+      <div class="container">
+        <h2 class="section__title">Light Fasting, Guided by AI Coach</h2>
+        <p class="section__subtitle">
+          Build a sustainable fasting rhythm with nutrition-aware guidance, not rigid rules.
+        </p>
+        <div class="coach">
+          <article class="coach__panel reveal">
+            <span class="coach__tag">AI Coach</span>
+            <h3>Personal plans that adapt to your day</h3>
+            <p>
+              Cal Expert helps you choose gentle fasting windows, understand meal timing, and adjust calorie goals
+              around your schedule, workouts, hydration, and progress.
+            </p>
+          </article>
+          <div class="coach__list">
+            <article class="coach__item reveal" style="--d: 0.06s">
+              <h3>Fasting window reminders</h3>
+              <p>Stay aware of eating and fasting windows with simple prompts that fit your routine.</p>
+            </article>
+            <article class="coach__item reveal" style="--d: 0.12s">
+              <h3>Meal balance suggestions</h3>
+              <p>Get practical tips for protein, fiber, hydration, and calories after each logged day.</p>
+            </article>
+            <article class="coach__item reveal" style="--d: 0.18s">
+              <h3>Weekly habit review</h3>
+              <p>AI Coach turns logs into clear next steps so your plan gets easier to follow over time.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- SNAPSHOT / CHARTS -->
     <section id="snapshot" class="section section--tint">
       <div class="container">
@@ -1088,7 +1286,7 @@
     <section id="reviews" class="section">
       <div class="container">
         <h2 class="section__title">What Our Users Say</h2>
-        <p class="section__subtitle">Real stories from people building healthier habits with CalMate.</p>
+        <p class="section__subtitle">Real stories from people building healthier habits with Cal Expert.</p>
         <div class="grid reviews">
           <article class="card">
             <div class="review__header">
@@ -1190,11 +1388,18 @@
           </p>
         </details>
         <details class="faq">
+          <summary>Can AI Coach help with light intermittent fasting?</summary>
+          <p>
+            Yes. AI Coach can help you plan gentle fasting windows, review meal balance, and suggest sustainable next
+            steps based on your logs and goals.
+          </p>
+        </details>
+        <details class="faq">
           <summary>How can I contact support?</summary>
           <p>
             Click
             <a
-              href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
+              href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&amp;body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
               >Contact</a
             >
             to email us directly. We usually reply within 2–3 business days.
@@ -1205,20 +1410,42 @@
 
     <footer class="footer">
       <div class="container footer__inner">
-        <a class="brand" href="#">
-          <img src="images/logo.png" width="32" height="32" alt="Cal Expert" />
-          <span>Cal Expert</span>
-        </a>
-        <nav class="footer__nav">
-          <a href="#why">Features</a>
-          <a href="#reviews">Reviews</a>
-          <a href="#faq">FAQ</a>
-          <a
-            href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
-            >Contact</a
-          >
-        </nav>
-        <p class="fine">© <span id="year"></span> Cal Expert. All rights reserved.</p>
+        <div class="footer__top">
+          <div>
+            <a class="brand" href="#">
+              <img class="brand__logo" src="https://calapps-hub.github.io/images/logo.png" width="32" height="32" alt="Cal Expert logo" />
+              <span>Cal Expert</span>
+            </a>
+            <p class="footer__copy">
+              Smarter calorie tracking with light fasting support and an AI Coach that turns daily logs into practical,
+              sustainable health habits.
+            </p>
+          </div>
+          <div>
+            <div class="footer__title">Explore</div>
+            <nav class="footer__nav">
+              <a href="#why">Features</a>
+              <a href="#coach">AI Coach</a>
+              <a href="#snapshot">Nutrition Snapshot</a>
+              <a href="#reviews">Reviews</a>
+              <a href="#faq">FAQ</a>
+            </nav>
+          </div>
+          <div>
+            <div class="footer__title">Support</div>
+            <nav class="footer__nav">
+              <a
+                href="mailto:calapps.feedback@gmail.com?subject=Cal Expert%20Feedback&amp;body=Hi%20Cal Expert%20team%2C%0A%0AHere%27s%20my%20feedback%3A%0A%0A-%20%0A-%20%0A%0AThanks!"
+                >Contact us</a
+              >
+              <a href="https://calapps-hub.github.io/privacy_policy" target="_blank" rel="noopener">Privacy Policy</a>
+              <a href="https://calapps-hub.github.io/term_of_service" target="_blank" rel="noopener">Terms of Use</a>
+            </nav>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <p class="fine">© <span id="year"></span> Cal Expert. All rights reserved.</p>
+        </div>
       </div>
     </footer>
 
